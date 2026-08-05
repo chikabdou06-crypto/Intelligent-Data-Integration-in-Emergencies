@@ -1,0 +1,1616 @@
+[
+  {
+    "question": "What is the flood risk in Valencia and are there any active AEMET warnings there?",
+    "plan": [
+      {
+        "tool": "patricova_flood_risk",
+        "arguments": {
+          "location_name": "Valencia"
+        }
+      },
+      {
+        "tool": "aemet_warnings",
+        "arguments": {}
+      }
+    ],
+    "execution_trace": [
+      {
+        "tool": "patricova_flood_risk",
+        "arguments": {
+          "location_name": "Valencia"
+        },
+        "result": {
+          "status": "success",
+          "coordinates": {
+            "lat": 39.4697065,
+            "lon": -0.3763353
+          },
+          "flood_risk": "None / Out of Zone",
+          "message": "No official PATRICOVA flood risk detected for these coordinates.",
+          "source": "patricova_flood_risk",
+          "data": {},
+          "metadata": {},
+          "error_message": null
+        },
+        "cached": true
+      },
+      {
+        "tool": "aemet_warnings",
+        "arguments": {},
+        "result": {
+          "status": "success",
+          "source": "AEMET OpenData CAP API (Live)",
+          "active_warnings_count": 62,
+          "data": [
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091639.611401ATTA22191784625399",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Sierra y Pedroches",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Sierra y Pedroches"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091639.611402ATTA22191784625399",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Campi\u00f1a cordobesa",
+              "description": "Temperatura m\u00e1xima: 42 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Campi\u00f1a cordobesa"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091639.611403ATTA22191784625399",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Subb\u00e9tica cordobesa",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Localmente se pueden alcanzar los 40\u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Subb\u00e9tica cordobesa"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091639.612101ATTA22191784625399",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Aracena",
+              "description": "Temperatura m\u00e1xima: 38 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Aracena"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091639.612102ATTA22191784625399",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. And\u00e9valo y Condado",
+              "description": "Temperatura m\u00e1xima: 38 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "And\u00e9valo y Condado"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091639.612103ATTA22191784625399",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Litoral de Huelva",
+              "description": "Temperatura m\u00e1xima: 36 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Litoral de Huelva"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091639.614101ATTA22191784625399",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Sierra norte de Sevilla",
+              "description": "Temperatura m\u00e1xima: 38 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Sierra norte de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091639.614102ATTA22191784625399",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Campi\u00f1a sevillana",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Campi\u00f1a sevillana"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091639.614103ATTA22191784625399",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Sierra sur de Sevilla",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Sierra sur de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.610401ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Valle del Almanzora y Los V\u00e9lez",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.610402ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Nacimiento y Campo de Tabernas",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Localmente se pueden alcanzar los 40 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Nacimiento y Campo de Tabernas"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.611801ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Cuenca del Genil",
+              "description": "Temperatura m\u00e1xima: 42 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Cuenca del Genil"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.611802ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Guadix y Baza",
+              "description": "Temperatura m\u00e1xima: 42 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Guadix y Baza"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.611803ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Nevada y Alpujarras",
+              "description": "Temperatura m\u00e1xima: 38 \u00baC. Localmente se pueden superar los 39 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Nevada y Alpujarras"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.612301ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Morena y Condado",
+              "description": "Temperatura m\u00e1xima: 42 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Morena y Condado"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.612302ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Cazorla y Segura",
+              "description": "Temperatura m\u00e1xima: 42 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Cazorla y Segura"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.612303ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Valle del Guadalquivir de Ja\u00e9n",
+              "description": "Temperatura m\u00e1xima: 42 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Valle del Guadalquivir de Ja\u00e9n"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.612304ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Capital y Montes de Ja\u00e9n",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Localmente se pueden alcanzar los 40 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Capital y Montes de Ja\u00e9n"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.612901ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Antequera",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Antequera"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.612902ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Ronda",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Localmente se pueden alcanzar los 40 \u00baC.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Ronda"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721091709.612903ATTA22191784625429",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Possible",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Sol y Guadalhorce",
+              "description": "Temperatura m\u00e1xima: 37 \u00baC. Se pueden alcanzar los 40\u00baC en el valle del Guadalhorce.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Sol y Guadalhorce"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721164430.611101ATTA22191784652270",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Possible",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Grazalema",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC. Estas temperaturas se esperan en el entorno de Jimena de la Frontera.",
+              "onset": "2026-07-22T13:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Grazalema"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721215002.61VV61ATTA24221784670602",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel verde",
+              "severity": "Minor",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel verde. CCAA",
+              "description": "",
+              "onset": "2026-07-24T00:00:00+02:00",
+              "expires": "2026-07-24T23:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez",
+                "Nacimiento y Campo de Tabernas",
+                "Poniente y Almer\u00eda Capital",
+                "Levante almeriense",
+                "Grazalema",
+                "Campi\u00f1a gaditana",
+                "Litoral gaditano",
+                "Estrecho",
+                "Sierra y Pedroches",
+                "Campi\u00f1a cordobesa",
+                "Subb\u00e9tica cordobesa",
+                "Cuenca del Genil",
+                "Guadix y Baza",
+                "Nevada y Alpujarras",
+                "Costa granadina",
+                "Aracena",
+                "And\u00e9valo y Condado",
+                "Litoral de Huelva",
+                "Morena y Condado",
+                "Cazorla y Segura",
+                "Valle del Guadalquivir de Ja\u00e9n",
+                "Capital y Montes de Ja\u00e9n",
+                "Antequera",
+                "Ronda",
+                "Sol y Guadalhorce",
+                "Axarqu\u00eda",
+                "Sierra norte de Sevilla",
+                "Campi\u00f1a sevillana",
+                "Sierra sur de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721215002.61VV61BTTI24221784670602",
+              "event": "Aviso de temperaturas m\u00ednimas de nivel verde",
+              "severity": "Minor",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00ednimas de nivel verde. CCAA",
+              "description": "",
+              "onset": "2026-07-24T00:00:00+02:00",
+              "expires": "2026-07-24T23:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez",
+                "Nacimiento y Campo de Tabernas",
+                "Poniente y Almer\u00eda Capital",
+                "Levante almeriense",
+                "Grazalema",
+                "Campi\u00f1a gaditana",
+                "Litoral gaditano",
+                "Estrecho",
+                "Sierra y Pedroches",
+                "Campi\u00f1a cordobesa",
+                "Subb\u00e9tica cordobesa",
+                "Cuenca del Genil",
+                "Guadix y Baza",
+                "Nevada y Alpujarras",
+                "Costa granadina",
+                "Aracena",
+                "And\u00e9valo y Condado",
+                "Litoral de Huelva",
+                "Morena y Condado",
+                "Cazorla y Segura",
+                "Valle del Guadalquivir de Ja\u00e9n",
+                "Capital y Montes de Ja\u00e9n",
+                "Antequera",
+                "Ronda",
+                "Sol y Guadalhorce",
+                "Axarqu\u00eda",
+                "Sierra norte de Sevilla",
+                "Campi\u00f1a sevillana",
+                "Sierra sur de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721215002.61VV61COCO24221784670602",
+              "event": "Aviso de costeros de nivel verde",
+              "severity": "Minor",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de costeros de nivel verde. CCAA",
+              "description": "",
+              "onset": "2026-07-24T00:00:00+02:00",
+              "expires": "2026-07-24T23:59:59+02:00",
+              "affected_areas": [
+                "Costa - Poniente y Almer\u00eda Capital",
+                "Costa - Levante almeriense",
+                "Costa - Litoral gaditano",
+                "Costa - Estrecho",
+                "Costa - Costa granadina",
+                "Costa - Litoral de Huelva",
+                "Costa - Sol y Guadalhorce",
+                "Costa - Axarqu\u00eda"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721215002.61VV61NENV24221784670602",
+              "event": "Aviso de nevadas de nivel verde",
+              "severity": "Minor",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de nevadas de nivel verde. CCAA",
+              "description": "",
+              "onset": "2026-07-24T00:00:00+02:00",
+              "expires": "2026-07-24T23:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez",
+                "Nacimiento y Campo de Tabernas",
+                "Poniente y Almer\u00eda Capital",
+                "Levante almeriense",
+                "Grazalema",
+                "Campi\u00f1a gaditana",
+                "Litoral gaditano",
+                "Estrecho",
+                "Sierra y Pedroches",
+                "Campi\u00f1a cordobesa",
+                "Subb\u00e9tica cordobesa",
+                "Cuenca del Genil",
+                "Guadix y Baza",
+                "Nevada y Alpujarras",
+                "Costa granadina",
+                "Aracena",
+                "And\u00e9valo y Condado",
+                "Litoral de Huelva",
+                "Morena y Condado",
+                "Cazorla y Segura",
+                "Valle del Guadalquivir de Ja\u00e9n",
+                "Capital y Montes de Ja\u00e9n",
+                "Antequera",
+                "Ronda",
+                "Sol y Guadalhorce",
+                "Axarqu\u00eda",
+                "Sierra norte de Sevilla",
+                "Campi\u00f1a sevillana",
+                "Sierra sur de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721215002.61VV61NINI24221784670602",
+              "event": "Aviso de nieblas de nivel verde",
+              "severity": "Minor",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de nieblas de nivel verde. CCAA",
+              "description": "",
+              "onset": "2026-07-24T00:00:00+02:00",
+              "expires": "2026-07-24T23:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez",
+                "Nacimiento y Campo de Tabernas",
+                "Poniente y Almer\u00eda Capital",
+                "Levante almeriense",
+                "Grazalema",
+                "Campi\u00f1a gaditana",
+                "Litoral gaditano",
+                "Estrecho",
+                "Sierra y Pedroches",
+                "Campi\u00f1a cordobesa",
+                "Subb\u00e9tica cordobesa",
+                "Cuenca del Genil",
+                "Guadix y Baza",
+                "Nevada y Alpujarras",
+                "Costa granadina",
+                "Aracena",
+                "And\u00e9valo y Condado",
+                "Litoral de Huelva",
+                "Morena y Condado",
+                "Cazorla y Segura",
+                "Valle del Guadalquivir de Ja\u00e9n",
+                "Capital y Montes de Ja\u00e9n",
+                "Antequera",
+                "Ronda",
+                "Sol y Guadalhorce",
+                "Axarqu\u00eda",
+                "Sierra norte de Sevilla",
+                "Campi\u00f1a sevillana",
+                "Sierra sur de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721215002.61VV61PRP124221784670602",
+              "event": "Aviso de lluvias de nivel verde",
+              "severity": "Minor",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de lluvias de nivel verde. CCAA",
+              "description": "",
+              "onset": "2026-07-24T00:00:00+02:00",
+              "expires": "2026-07-24T23:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez",
+                "Nacimiento y Campo de Tabernas",
+                "Poniente y Almer\u00eda Capital",
+                "Levante almeriense",
+                "Grazalema",
+                "Campi\u00f1a gaditana",
+                "Litoral gaditano",
+                "Estrecho",
+                "Sierra y Pedroches",
+                "Campi\u00f1a cordobesa",
+                "Subb\u00e9tica cordobesa",
+                "Cuenca del Genil",
+                "Guadix y Baza",
+                "Nevada y Alpujarras",
+                "Costa granadina",
+                "Aracena",
+                "And\u00e9valo y Condado",
+                "Litoral de Huelva",
+                "Morena y Condado",
+                "Cazorla y Segura",
+                "Valle del Guadalquivir de Ja\u00e9n",
+                "Capital y Montes de Ja\u00e9n",
+                "Antequera",
+                "Ronda",
+                "Sol y Guadalhorce",
+                "Axarqu\u00eda",
+                "Sierra norte de Sevilla",
+                "Campi\u00f1a sevillana",
+                "Sierra sur de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721215002.61VV61TOTO24221784670602",
+              "event": "Aviso de tormentas de nivel verde",
+              "severity": "Minor",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de tormentas de nivel verde. CCAA",
+              "description": "",
+              "onset": "2026-07-24T00:00:00+02:00",
+              "expires": "2026-07-24T23:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez",
+                "Nacimiento y Campo de Tabernas",
+                "Poniente y Almer\u00eda Capital",
+                "Levante almeriense",
+                "Grazalema",
+                "Campi\u00f1a gaditana",
+                "Litoral gaditano",
+                "Estrecho",
+                "Sierra y Pedroches",
+                "Campi\u00f1a cordobesa",
+                "Subb\u00e9tica cordobesa",
+                "Cuenca del Genil",
+                "Guadix y Baza",
+                "Nevada y Alpujarras",
+                "Costa granadina",
+                "Aracena",
+                "And\u00e9valo y Condado",
+                "Litoral de Huelva",
+                "Morena y Condado",
+                "Cazorla y Segura",
+                "Valle del Guadalquivir de Ja\u00e9n",
+                "Capital y Montes de Ja\u00e9n",
+                "Antequera",
+                "Ronda",
+                "Sol y Guadalhorce",
+                "Axarqu\u00eda",
+                "Sierra norte de Sevilla",
+                "Campi\u00f1a sevillana",
+                "Sierra sur de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721215002.61VV61VIRM24221784670602",
+              "event": "Aviso de vientos de nivel verde",
+              "severity": "Minor",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de vientos de nivel verde. CCAA",
+              "description": "",
+              "onset": "2026-07-24T00:00:00+02:00",
+              "expires": "2026-07-24T23:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez",
+                "Nacimiento y Campo de Tabernas",
+                "Poniente y Almer\u00eda Capital",
+                "Levante almeriense",
+                "Grazalema",
+                "Campi\u00f1a gaditana",
+                "Litoral gaditano",
+                "Estrecho",
+                "Sierra y Pedroches",
+                "Campi\u00f1a cordobesa",
+                "Subb\u00e9tica cordobesa",
+                "Cuenca del Genil",
+                "Guadix y Baza",
+                "Nevada y Alpujarras",
+                "Costa granadina",
+                "Aracena",
+                "And\u00e9valo y Condado",
+                "Litoral de Huelva",
+                "Morena y Condado",
+                "Cazorla y Segura",
+                "Valle del Guadalquivir de Ja\u00e9n",
+                "Capital y Montes de Ja\u00e9n",
+                "Antequera",
+                "Ronda",
+                "Sol y Guadalhorce",
+                "Axarqu\u00eda",
+                "Sierra norte de Sevilla",
+                "Campi\u00f1a sevillana",
+                "Sierra sur de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260721215002.61VV61VSVI24221784670602",
+              "event": "Aviso de polvo en suspensi\u00f3n de nivel verde",
+              "severity": "Minor",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de polvo en suspensi\u00f3n de nivel verde. CCAA",
+              "description": "",
+              "onset": "2026-07-24T00:00:00+02:00",
+              "expires": "2026-07-24T23:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez",
+                "Nacimiento y Campo de Tabernas",
+                "Poniente y Almer\u00eda Capital",
+                "Levante almeriense",
+                "Grazalema",
+                "Campi\u00f1a gaditana",
+                "Litoral gaditano",
+                "Estrecho",
+                "Sierra y Pedroches",
+                "Campi\u00f1a cordobesa",
+                "Subb\u00e9tica cordobesa",
+                "Cuenca del Genil",
+                "Guadix y Baza",
+                "Nevada y Alpujarras",
+                "Costa granadina",
+                "Aracena",
+                "And\u00e9valo y Condado",
+                "Litoral de Huelva",
+                "Morena y Condado",
+                "Cazorla y Segura",
+                "Valle del Guadalquivir de Ja\u00e9n",
+                "Capital y Montes de Ja\u00e9n",
+                "Antequera",
+                "Ronda",
+                "Sol y Guadalhorce",
+                "Axarqu\u00eda",
+                "Sierra norte de Sevilla",
+                "Campi\u00f1a sevillana",
+                "Sierra sur de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092452.611101ATTA23191784712292",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Grazalema",
+              "description": "Temperatura m\u00e1xima: 41 \u00baC. Esta temperatura se espera en el entorno de Jimena de la Frontera.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Grazalema"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092452.611401ATTA23191784712292",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Sierra y Pedroches",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Localmente se pueden alcanzar los 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Sierra y Pedroches"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092452.611402ATTA23191784712292",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Campi\u00f1a cordobesa",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Campi\u00f1a cordobesa"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092452.611403ATTA23191784712292",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Subb\u00e9tica cordobesa",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Localmente se pueden alcanzar los 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Subb\u00e9tica cordobesa"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092452.614101ATTA23191784712292",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Sierra norte de Sevilla",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Localmente se pueden alcanzar los 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Sierra norte de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092452.614102ATTA23191784712292",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Campi\u00f1a sevillana",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Localmente se pueden alcanzar los 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Campi\u00f1a sevillana"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092452.614103ATTA23191784712292",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Sierra sur de Sevilla",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Localmente se pueden alcanzar los 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Sierra sur de Sevilla"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.610401ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Valle del Almanzora y Los V\u00e9lez",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.610401TOTO22191784712458",
+              "event": "Aviso de tormentas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de tormentas de nivel amarillo. Valle del Almanzora y Los V\u00e9lez",
+              "description": "Las tormentas podr\u00e1n ir localmente acompa\u00f1adas de granizo y rachas de viento muy fuertes.",
+              "onset": "2026-07-22T15:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.610401TOTO23191784712458",
+              "event": "Aviso de tormentas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de tormentas de nivel amarillo. Valle del Almanzora y Los V\u00e9lez",
+              "description": "Las tormentas podr\u00e1n ir localmente acompa\u00f1adas de granizo y rachas de viento muy fuertes.",
+              "onset": "2026-07-23T16:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.610402ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Nacimiento y Campo de Tabernas",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Nacimiento y Campo de Tabernas"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.610403ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Poniente y Almer\u00eda Capital",
+              "description": "Temperatura m\u00e1xima: 38 \u00baC. Estas temperaturas se esperan en el entorno de El Ejido.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Poniente y Almer\u00eda Capital"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.610404ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Levante almeriense",
+              "description": "Temperatura m\u00e1xima: 37 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Levante almeriense"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.611801ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Cuenca del Genil",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Cuenca del Genil"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.611802ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Guadix y Baza",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Guadix y Baza"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.611802TOTO22191784712458",
+              "event": "Aviso de tormentas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de tormentas de nivel amarillo. Guadix y Baza",
+              "description": "Las tormentas podr\u00e1n ir localmente acompa\u00f1adas de granizo y rachas de viento muy fuertes.",
+              "onset": "2026-07-22T15:00:00+02:00",
+              "expires": "2026-07-22T20:59:59+02:00",
+              "affected_areas": [
+                "Guadix y Baza"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.611803ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Nevada y Alpujarras",
+              "description": "Temperatura m\u00e1xima: 38 \u00baC. Localmente se pueden alcanzar los 39 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Nevada y Alpujarras"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.612301ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Morena y Condado",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Morena y Condado"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.612302ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Cazorla y Segura",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Cazorla y Segura"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.612303ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Valle del Guadalquivir de Ja\u00e9n",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Valle del Guadalquivir de Ja\u00e9n"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.612304ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Capital y Montes de Ja\u00e9n",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Localmente se pueden alcanzar los 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Capital y Montes de Ja\u00e9n"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.612901ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Antequera",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Antequera"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.612902ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Ronda",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Localmente se pueden alcanzar los 40 \u00baC.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Ronda"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.612903ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Sol y Guadalhorce",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC. Pueden superarse los 42\u00b0C en el interior y el extremo occidental de la zona.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Sol y Guadalhorce"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092738.612904ATTA23191784712458",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Axarqu\u00eda",
+              "description": "Temperatura m\u00e1xima: 37 \u00baC. Estas temperaturas se esperan en el interior.",
+              "onset": "2026-07-23T13:00:00+02:00",
+              "expires": "2026-07-23T20:59:59+02:00",
+              "affected_areas": [
+                "Axarqu\u00eda"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092932.610401ATTA24191784712572",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Valle del Almanzora y Los V\u00e9lez",
+              "description": "Temperatura m\u00e1xima: 42 \u00baC.",
+              "onset": "2026-07-24T13:00:00+02:00",
+              "expires": "2026-07-24T20:59:59+02:00",
+              "affected_areas": [
+                "Valle del Almanzora y Los V\u00e9lez"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092932.610402ATTA24191784712572",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Nacimiento y Campo de Tabernas",
+              "description": "Temperatura m\u00e1xima: 39 \u00baC.",
+              "onset": "2026-07-24T13:00:00+02:00",
+              "expires": "2026-07-24T20:59:59+02:00",
+              "affected_areas": [
+                "Nacimiento y Campo de Tabernas"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092932.610403ATTA24191784712572",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Poniente y Almer\u00eda Capital",
+              "description": "Temperatura m\u00e1xima: 38 \u00baC. Estas temperaturas se esperan en el entorno de El Ejido.",
+              "onset": "2026-07-24T13:00:00+02:00",
+              "expires": "2026-07-24T20:59:59+02:00",
+              "affected_areas": [
+                "Poniente y Almer\u00eda Capital"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092932.610404ATTA24191784712572",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Levante almeriense",
+              "description": "Temperatura m\u00e1xima: 38 \u00baC.",
+              "onset": "2026-07-24T13:00:00+02:00",
+              "expires": "2026-07-24T20:59:59+02:00",
+              "affected_areas": [
+                "Levante almeriense"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092932.612903ATTA24191784712572",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel naranja",
+              "severity": "Severe",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel naranja. Sol y Guadalhorce",
+              "description": "Temperatura m\u00e1xima: 40 \u00baC.",
+              "onset": "2026-07-24T13:00:00+02:00",
+              "expires": "2026-07-24T20:59:59+02:00",
+              "affected_areas": [
+                "Sol y Guadalhorce"
+              ],
+              "region": "Comunitat Valenciana"
+            },
+            {
+              "identifier": "2.49.0.0.724.0.ES.20260722092932.612904ATTA24191784712572",
+              "event": "Aviso de temperaturas m\u00e1ximas de nivel amarillo",
+              "severity": "Moderate",
+              "urgency": "Future",
+              "certainty": "Likely",
+              "level": "",
+              "headline": "Aviso de temperaturas m\u00e1ximas de nivel amarillo. Axarqu\u00eda",
+              "description": "Temperatura m\u00e1xima: 37 \u00baC. Se pueden alcanzar los 39\u00baC en el interior.",
+              "onset": "2026-07-24T13:00:00+02:00",
+              "expires": "2026-07-24T20:59:59+02:00",
+              "affected_areas": [
+                "Axarqu\u00eda"
+              ],
+              "region": "Comunitat Valenciana"
+            }
+          ],
+          "metadata": {},
+          "error_message": null
+        },
+        "cached": false
+      }
+    ],
+    "final_answer": "Based on the data retrieved from the emergency response tools, here is the current flood risk and warning status for Valencia as of July 22, 2026:\n\n*   **Flood Risk**: \n    *   From the PATRICOVA flood risk tool (`patricova_flood_risk`), we found that the flood risk for the coordinates of Valencia (39.4697065, -0.3763353) is classified as **None / Out of Zone**. There is no official PATRICOVA flood risk detected for this location.\n*   **Active AEMET Warnings**: \n    *   From the AEMET warnings tool (`aemet_warnings`), we retrieved a total of 62 active warnings. While these warnings are labeled under the \"Comunitat Valenciana\" region in the data payload, a detailed analysis of the specific `affected_areas` shows that **none of them apply to the city or province of Valencia**. The active warnings (primarily for high temperatures and localized storms) are for areas located in Andalusia (such as C\u00f3rdoba, Sevilla, Almer\u00eda, Granada, Ja\u00e9n, M\u00e1laga, C\u00e1diz, and Huelva). Consequently, there are **no active AEMET warnings** affecting Valencia.",
+    "tools_used": [
+      "patricova_flood_risk",
+      "aemet_warnings"
+    ]
+  },
+  {
+    "question": "Search the vault for information about 'terremoto' and tell me the latest earthquakes recorded.",
+    "plan": [
+      {
+        "tool": "vault_pdf_search",
+        "arguments": {
+          "query": "terremoto",
+          "top_k": 5
+        }
+      },
+      {
+        "tool": "csv_reader",
+        "arguments": {
+          "filename": "pelsiscav_clean_seismic_catalog.csv",
+          "order_by": "Fecha",
+          "order_desc": true,
+          "max_rows": 5
+        }
+      },
+      {
+        "tool": "siscova_earthquakes",
+        "arguments": {
+          "limit": 5
+        }
+      }
+    ],
+    "execution_trace": [
+      {
+        "tool": "vault_pdf_search",
+        "arguments": {
+          "query": "terremoto",
+          "top_k": 5
+        },
+        "result": {
+          "status": "success",
+          "retrieval_mode": "pinecone",
+          "pinecone_index": "tfm-vault",
+          "results": [
+            {
+              "text": "construcci\u00f3n), y un coeficiente de amplificaci\u00f3n del terreno. \n \nAceleraci\u00f3n espectral (de per\u00edodo t) (SA (t)): Es la aceleraci\u00f3n m\u00e1xima de respuesta de \nun oscilador libre de un grado de libertad, ante un movimiento de entrada en su base y de \nper\u00edodo t. La velocidad espectral y la aceleraci\u00f3n espectral se pueden relacionar mediante \nla  expresi\u00f3n SA(\u03c4) = 2\u00b7\u03c0\u00b7SV(\u03c4)/\u03c4. \n \nAceleraci\u00f3n m\u00e1xima del suelo: v\u00e9ase Aceleraci\u00f3n pico del suelo. \n \nAceleraci\u00f3n pico del suelo (PGA): Valor m\u00e1ximo que toma la aceleraci\u00f3n en el \nacelerograma. Normalmente se considera que la PGA es la aceleraci\u00f3n espectral de \nper\u00edodo cero. \n \n\u00c1rbol l\u00f3gico: Herramienta l\u00f3gica que se u tiliza para incorporar distintas opciones en el \nc\u00e1lculo de la peligrosidad s\u00edsmica, asign\u00e1ndoles pesos que representan la verosimilitud del \nanalista de que la opci\u00f3n correspondiente reproduzca el caso real. El \u00e1rbol l\u00f3gico se \ncompone de nodos, que representan elementos que intervienen en el c\u00e1lculo, y ramas, que",
+              "source": "Pel_Sis_CV_Anex.pdf",
+              "chunk_index": 2.0,
+              "retrieval": "pinecone",
+              "score": 0.635330379
+            },
+            {
+              "text": "Anexo H: ESCALA DE INTENSIDAD EMS\nANEXO A \n \n \nGLOSARIO DE T\u00c9RMINOS  \n \n \nCONSEJO DE SEGURIDAD NUCLEAR (C.S.N.) 2008. Proyecto Expel, Sistema experto de \nan\u00e1lisis probabilista de la peligrosidad\nAnexo A \n \n \n \n \nP\u00e1gina 1 de 4 \nGlosario de T\u00e9rminos \n \nAceleraci\u00f3n b\u00e1sica (a b): Es un valor caracter\u00edstico de la aceleraci\u00f3n horizontal de la \nsuperficie del terreno proporcionado por la Norma NCSE -02, resultante de un estudio de \npeligrosidad. La Norma NCSE -02 da los valores de a b para un per\u00edodo de retorno de 500 \na\u00f1os en aquellos municipios en los que supera el valor de 0,04 g y un mapa de aceleraci\u00f3n \nb\u00e1sica del territorio espa\u00f1ol. \n \nAceleraci\u00f3n de c\u00e1lculo (a c): Seg\u00fan la definici\u00f3n de la Norma NCSE -02, es el producto de \nla aceleraci\u00f3n b\u00e1sica por un coeficiente adimensional  de riesgo ( \u03c1, funci\u00f3n de la \nprobabilidad aceptable de que se exceda ac en el per\u00edodo de vida para el que se proyecta la \nconstrucci\u00f3n), y un coeficiente de amplificaci\u00f3n del terreno.",
+              "source": "Pel_Sis_CV_Anex.pdf",
+              "chunk_index": 1.0,
+              "retrieval": "pinecone",
+              "score": 0.629509032
+            },
+            {
+              "text": "PELSISCAV \n \nPeligrosidad S\u00edsmica en la  \nComunitat Valenciana \n \n \n \n \n \nANEXOS \n \n \n \n \n \nJULIO, 2010\nPELSISCAV \n \nPeligrosidad S\u00edsmica en la  \nComunitat Valenciana \n \n \nANEXOS \n \n \nDEPARTAMENTO DE CIENCIAS DE LA TIERRA Y MEDIO AMBIENTE \nDEPARTAMENTO DE ECOLOGIA \n UNIDAD DE SISMOLOG\u00cdA.  \n UNIVERSIDAD DE ALICANTE. \n \n \n \n \n \n \n \n \n \n \n \nJULIO, 2010\nANEXOS \n \n \n \n \ni \n \n \nANEXOS: \n \n \nAnexo A: GLOSARIO DE T\u00c9RMINOS \n \nAnexo B: CAT\u00c1LOGO S\u00cdSMICO EMPLEADO EN EL C\u00c1LCULO DE LA PELIGROSIDAD S\u00cdSMICA \nEN LA COMUNITAT VALENCIANA \n \nAnexo C: FUENTES S\u00cdSMICAS \n \nAnexo D: ANALISIS DE SERIES S\u00cdSMICAS \n \nAnexo E: INTENSIDADES ESPERADAS EN ENTIDADES POBLACIONALES DE LA  \nCOMUNITAT VALENCIANA PARA PERIODOS DE RETORNO 100, 500 Y 1.000 A\u00d1OS \n \nAnexo F: MUNICIPIOS CON PELIGROSIDAD S\u00cdSMICA IGUAL O MAYOR QUE VII \n \nAnexo G: MEDIDAS DE PROTECCI\u00d3N  A LA POBLACI\u00d3N, LOS BIENES Y EL MEDIO AMBIENTE\n   \nAnexo H: ESCALA DE INTENSIDAD EMS\nANEXO A \n \n \nGLOSARIO DE T\u00c9RMINOS",
+              "source": "Pel_Sis_CV_Anex.pdf",
+              "chunk_index": 0.0,
+              "retrieval": "pinecone",
+              "score": 0.616783381
+            },
+            {
+              "text": "# Protocolos de Emergencia (PELSISCAV) - Limpiados por IA\n\n\n\n## P\u00e1ginas 6-10\nAceleraci\u00f3n b\u00e1sica (a b): Es un valor caracter\u00edstico de la aceleraci\u00f3n horizontal de la superficie del terreno proporcionado por la Norma NCSE -02, resultante de un estudio de peligrosidad. La Norma NCSE -02 da los valores de a b para un per\u00edodo de retorno de 500 a\u00f1os en aquellos municipios en los que supera el valor de 0,04 g y un mapa de aceleraci\u00f3n b\u00e1sica del territorio espa\u00f1ol.\n\nAceleraci\u00f3n de c\u00e1lculo (a c): Seg\u00fan la definici\u00f3n de la Norma NCSE -02, es el producto de la aceleraci\u00f3n b\u00e1sica por un coeficiente adimensional de riesgo ( \u03c1, funci\u00f3n de la probabilidad aceptable de que se exceda ac en el per\u00edodo de vida para el que se proyecta la construcci\u00f3n), y un coeficiente de amplificaci\u00f3n del terreno.",
+              "source": "clean_pelsiscav_protocols.txt",
+              "chunk_index": 0.0,
+              "retrieval": "pinecone",
+              "score": 0.60749054
+            },
+            {
+              "text": "c\u00f3mo debe actuar y comportarse ante una emergencia seg\u00fan su \ngeolocalizaci\u00f3n. \nEntregable: Informe de la definici\u00f3n del ChatBot ante una emergencia. \nPresupuesto: 4.000 \u20ac \nEquipo de Trabajo \nIP: Andr\u00e9s Montoyo Guijarro \nCatedr\u00e1tico de Lenguajes y Sistemas Inform\u00e1ticos de la Universidad de \nAlicante \nhttps://cvnet.cpd.ua.es/curriculum-breve/es/montoyo-guijarro-juan-\nandres/14318 \nInv. 2: Jos\u00e9 Ignacio Abreu Salas \nProfesor Titular de la Universidad de Alicante. \nhttps://cvnet.cpd.ua.es/curriculum-breve/es/abreu-salas-jose-ignacio/378727 \nInv. 3: Ernesto Estevanell Valladares \nInvestigador en el Grupo de Procesamiento del Lenguaje y Sistemas de \nInformaci\u00f3n (GPLSI) de la Universidad de la Habana. Experto en Inteligencia \nArtificial en sistemas inteligentes de di\u00e1logo.",
+              "source": "report-ai-risk-cenid-v1.0.pdf",
+              "chunk_index": 50.0,
+              "retrieval": "pinecone",
+              "score": 0.575523615
+            }
+          ],
+          "source": "vault_pdf_search",
+          "data": {},
+          "metadata": {},
+          "error_message": null
+        },
+        "cached": false
+      },
+      {
+        "tool": "csv_reader",
+        "arguments": {
+          "filename": "pelsiscav_clean_seismic_catalog.csv",
+          "order_by": "Fecha",
+          "order_desc": true,
+          "max_rows": 5
+        },
+        "result": {
+          "status": "success",
+          "filename": "pelsiscav_clean_seismic_catalog.csv",
+          "headers": [
+            "Fecha",
+            "Hora",
+            "Lat",
+            "Long",
+            "Prof",
+            "Int",
+            "Mag",
+            "Localizacion",
+            "Cluster"
+          ],
+          "total_rows": 2887,
+          "returned_rows": 5,
+          "data": [
+            {
+              "Fecha": "31/12/2008",
+              "Hora": "23:37:04",
+              "Lat": "40.52",
+              "Long": "-0.18",
+              "Prof": "0",
+              "Int": "0.0",
+              "Mag": "2.1",
+              "Localizacion": "N CASTELLFORT.CS",
+              "Cluster": "485"
+            },
+            {
+              "Fecha": "31/12/2008",
+              "Hora": "03:10:01",
+              "Lat": "38.46",
+              "Long": "-1.03",
+              "Prof": "32",
+              "Int": "0.0",
+              "Mag": "1.0",
+              "Localizacion": "N EL PIN\u00d3S/PINOSO.A",
+              "Cluster": "719"
+            },
+            {
+              "Fecha": "31/12/2006",
+              "Hora": "16:34:52",
+              "Lat": "37.33",
+              "Long": "-2.04",
+              "Prof": "5",
+              "Int": "0.0",
+              "Mag": "1.3",
+              "Localizacion": "SW ZURGENA.AL",
+              "Cluster": "528"
+            },
+            {
+              "Fecha": "31/12/1856",
+              "Hora": "22:30:00",
+              "Lat": "38.81",
+              "Long": "-0.03",
+              "Prof": "0",
+              "Int": "4.5",
+              "Mag": "0.0",
+              "Localizacion": "BENIMELI.A",
+              "Cluster": "86"
+            },
+            {
+              "Fecha": "31/10/2007",
+              "Hora": "03:46:46",
+              "Lat": "37.09",
+              "Long": "0.85",
+              "Prof": "19",
+              "Int": "0.0",
+              "Mag": "3.2",
+              "Localizacion": "MEDITERR\u00c1NEO-ARGELIA",
+              "Cluster": "316"
+            }
+          ],
+          "truncated": true,
+          "max_rows": 5,
+          "message": "Results capped at 5 rows. Refine filters for more precision.",
+          "source": "csv_reader",
+          "metadata": {},
+          "error_message": null
+        },
+        "cached": false
+      },
+      {
+        "tool": "siscova_earthquakes",
+        "arguments": {
+          "limit": 5
+        },
+        "result": {
+          "status": "success",
+          "source": "GVA Open Data API (Live)",
+          "total_records_in_db": 2202,
+          "returned_records": 5,
+          "data": [
+            {
+              "date": "2026-07-13",
+              "time_utc": "01:40:39",
+              "magnitude": "1.9",
+              "depth_km": "8",
+              "latitude": "38.2533",
+              "longitude": "-0.7449",
+              "municipality": "Elx/Elche",
+              "province": "Alacant/Alicante",
+              "zone": "Comunitat Valenciana"
+            },
+            {
+              "date": "2026-07-12",
+              "time_utc": "05:07:49",
+              "magnitude": "0.8",
+              "depth_km": "7",
+              "latitude": "37.8176",
+              "longitude": "-1.4161",
+              "municipality": "",
+              "province": "Murcia",
+              "zone": "Fuera Comunitat Valenciana"
+            },
+            {
+              "date": "2026-07-08",
+              "time_utc": "01:29:09",
+              "magnitude": "1.1",
+              "depth_km": "7",
+              "latitude": "38.0395",
+              "longitude": "-0.8289",
+              "municipality": "Jacarilla",
+              "province": "Alacant/Alicante",
+              "zone": "Comunitat Valenciana"
+            },
+            {
+              "date": "2026-07-07",
+              "time_utc": "18:52:48",
+              "magnitude": "2.3",
+              "depth_km": "4",
+              "latitude": "39.2542",
+              "longitude": "-0.1244",
+              "municipality": "",
+              "province": "",
+              "zone": "Mar Mediterr\u00c3\u00a1neo"
+            },
+            {
+              "date": "2026-07-07",
+              "time_utc": "00:19:21",
+              "magnitude": "1.6",
+              "depth_km": "28",
+              "latitude": "38.4493",
+              "longitude": "0.5004",
+              "municipality": "",
+              "province": "",
+              "zone": "Mar Mediterr\u00c3\u00a1neo"
+            }
+          ],
+          "metadata": {},
+          "error_message": null
+        },
+        "cached": false
+      }
+    ],
+    "final_answer": "Based on the synthesis of the retrieved data, here is the information regarding \"terremoto\" (earthquakes) and the latest recorded seismic events:\n\n*   **From the Vault PDF Search (`vault_pdf_search`)**: \n    *   Retrieved documents from the **PELSISCAV** project (*Peligrosidad S\u00edsmica en la Comunitat Valenciana*, July 2010) and emergency protocols.\n    *   These files contain technical annexes, including a Glossary of Terms defining seismic hazard parameters such as Basic Acceleration ($a_b$), Calculation Acceleration ($a_c$), Peak Ground Acceleration (PGA), and Logic Trees used for seismic hazard calculations.\n\n*   **From the Seismic Catalog CSV (`csv_reader`)**: \n    *   Retrieved historical seismic data from the `pelsiscav_clean_seismic_catalog.csv` file. \n    *   The catalog contains historical records up to late 2008, with some of the last recorded entries in this file occurring on **December 31, 2008** (e.g., a magnitude 2.1 earthquake in Castellfort, Castell\u00f3n, and a magnitude 1.0 earthquake in Pinoso, Alicante).\n\n*   **From the Live SISCOVA API (`siscova_earthquakes`)**: \n    *   Retrieved the most recent real-time earthquakes recorded up to July 2026. The 5 latest recorded events are:\n        1.  **2026-07-13 (01:40:39 UTC)**: Magnitude **1.9**, depth 8 km, located in **Elx/Elche (Alacant/Alicante)**, Comunitat Valenciana.\n        2.  **2026-07-12 (05:07:49 UTC)**: Magnitude **0.8**, depth 7 km, located in **Murcia** (Outside Comunitat Valenciana).\n        3.  **2026-07-08 (01:29:09 UTC)**: Magnitude **1.1**, depth 7 km, located in **Jacarilla (Alacant/Alicante)**, Comunitat Valenciana.\n        4.  **2026-07-07 (18:52:48 UTC)**: Magnitude **2.3**, depth 4 km, located in the **Mediterranean Sea**.\n        5.  **2026-07-07 (00:19:21 UTC)**: Magnitude **1.6**, depth 28 km, located in the **Mediterranean Sea**.",
+    "tools_used": [
+      "vault_pdf_search",
+      "csv_reader",
+      "siscova_earthquakes"
+    ]
+  },
+  {
+    "question": "Query the clean seismic catalog CSV for the most recent earthquakes in the province of Alicante with magnitude greater than 2.0.",
+    "plan": [
+      {
+        "tool": "csv_reader",
+        "arguments": {
+          "filename": "pelsiscav_clean_seismic_catalog.csv",
+          "filter_column": "Localizacion",
+          "filter_value": "ALACANT",
+          "filter_column_2": "Mag",
+          "filter_value_2": "2.0",
+          "filter_operator_2": ">",
+          "order_by": "Fecha",
+          "order_desc": true,
+          "max_rows": 50
+        }
+      }
+    ],
+    "execution_trace": [
+      {
+        "tool": "csv_reader",
+        "arguments": {
+          "filename": "pelsiscav_clean_seismic_catalog.csv",
+          "filter_column": "Localizacion",
+          "filter_value": "ALACANT",
+          "filter_column_2": "Mag",
+          "filter_value_2": "2.0",
+          "filter_operator_2": ">",
+          "order_by": "Fecha",
+          "order_desc": true,
+          "max_rows": 50
+        },
+        "result": {
+          "status": "success",
+          "filename": "pelsiscav_clean_seismic_catalog.csv",
+          "headers": [
+            "Fecha",
+            "Hora",
+            "Lat",
+            "Long",
+            "Prof",
+            "Int",
+            "Mag",
+            "Localizacion",
+            "Cluster"
+          ],
+          "total_rows": 2,
+          "returned_rows": 2,
+          "data": [
+            {
+              "Fecha": "26/11/1979",
+              "Hora": "02:49:20",
+              "Lat": "38.35",
+              "Long": "-0.48",
+              "Prof": "40",
+              "Int": "0.0",
+              "Mag": "3.1",
+              "Localizacion": "NW ALICANTE/ALACANT.A",
+              "Cluster": "318"
+            },
+            {
+              "Fecha": "02/01/1980",
+              "Hora": "13:16:29",
+              "Lat": "38.27",
+              "Long": "-0.42",
+              "Prof": "5",
+              "Int": "0.0",
+              "Mag": "3.1",
+              "Localizacion": "SE ALICANTE/ALACANT.A",
+              "Cluster": "318"
+            }
+          ],
+          "source": "csv_reader",
+          "metadata": {},
+          "error_message": null
+        },
+        "cached": false
+      }
+    ],
+    "final_answer": "Based on the execution trace of the seismic catalog database, here are the most recent earthquakes recorded in the province of Alicante with a magnitude greater than 2.0:\n\n*   **Data Source & Retrieval**: From the `csv_reader` tool querying `pelsiscav_clean_seismic_catalog.csv`, we retrieved two historical seismic events matching the criteria (location containing \"ALACANT\" and magnitude > 2.0).\n*   **Most Recent Event (January 2, 1980)**:\n    *   **Date & Time**: 02/01/1980 at 13:16:29\n    *   **Location**: SE ALICANTE/ALACANT.A (Latitude: 38.27, Longitude: -0.42)\n    *   **Magnitude**: 3.1\n    *   **Depth**: 5 km\n    *   **Intensity**: 0.0\n*   **Second Most Recent Event (November 26, 1979)**:\n    *   **Date & Time**: 26/11/1979 at 02:49:20\n    *   **Location**: NW ALICANTE/ALACANT.A (Latitude: 38.35, Longitude: -0.48)\n    *   **Magnitude**: 3.1\n    *   **Depth**: 40 km\n    *   **Intensity**: 0.0\n\n*(Note: Although the tool output listed the 1979 event first due to text-based sorting of the date string, chronologically the January 1980 event is the most recent).*",
+    "tools_used": [
+      "csv_reader"
+    ]
+  }
+]

@@ -1,0 +1,24 @@
+.env
+backend/.index/
+__pycache__/
+*.pyc
+.venv/
+lookhere/
+.vscode/
+
+# Vault Data (Strictly ignored)
+backend/vault/
+!backend/vault/.gitkeep
+*.csv
+*.pdf
+
+# ToolUniverse Caching & Logs
+cache/
+logs/
+.ruff_cache/
+
+# Google OAuth credentials — NEVER commit these
+credentials.json
+token.json
+
+scratch/

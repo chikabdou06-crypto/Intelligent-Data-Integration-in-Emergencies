@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolUniverse RAG Agent — Core Architecture Technical Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface-2: #1e2130;
+            --border: #2a2d3a;
+            --text: #dde0ec;
+            --text-dim: #8b8fa3;
+            --accent: #6c5ce7;
+            --accent-light: #a29bfe;
+            --green: #00cec9;
+            --orange: #fdcb6e;
+            --red: #ff6b6b;
+            --blue: #74b9ff;
+            --pink: #fd79a8;
+            --cyan: #81ecec;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.75;
+            font-size: 13.5px;
+        }
+
+        /* ─── PRINT ─── */
+        @media print {
+            body { background: white; color: #111; font-size: 10.5pt; line-height: 1.55; }
+            .page { box-shadow: none !important; border: none !important; background: white !important; margin: 0; padding: 30px 40px; border-radius: 0; }
+            :root { --text: #111; --text-dim: #555; --surface: #f8f9fa; --surface-2: #f0f0f0; --border: #ccc; --bg: white; --accent-light: #5a4fd4; --green: #0a8a87; --orange: #b8860b; --red: #c0392b; --blue: #2471a3; }
+            code, pre { background: #f0f0f0 !important; color: #333 !important; border-color: #ccc !important; }
+            .fn-sig { background: #eee !important; }
+            h1 { -webkit-text-fill-color: var(--accent-light) !important; color: var(--accent-light) !important; }
+        }
+
+        .page {
+            max-width: 960px;
+            margin: 30px auto;
+            padding: 50px 56px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+
+        /* ─── TYPOGRAPHY ─── */
+        h1 {
+            font-size: 2em;
+            font-weight: 800;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, var(--accent-light), var(--green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        h2 {
+            font-size: 1.45em;
+            font-weight: 700;
+            margin-top: 36px;
+            margin-bottom: 10px;
+            color: var(--accent-light);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 5px;
+        }
+        h3 {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-top: 22px;
+            margin-bottom: 6px;
+            color: var(--green);
+        }
+        h4 {
+            font-size: 0.95em;
+            font-weight: 600;
+            margin-top: 16px;
+            margin-bottom: 4px;
+            color: var(--orange);
+        }
+        p { margin-bottom: 10px; }
+        .subtitle { font-size: 1em; color: var(--text-dim); margin-bottom: 28px; }
+        strong { color: var(--accent-light); font-weight: 600; }
+        em { color: var(--orange); font-style: normal; font-weight: 500; }
+
+        /* ─── CODE ─── */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--surface-2);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.86em;
+            color: var(--green);
+            border: 1px solid var(--border);
+        }
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 0.82em;
+            line-height: 1.55;
+            overflow-x: auto;
+            margin: 12px 0 16px 0;
+            color: var(--text);
+            white-space: pre;
+        }
+        pre .c { color: var(--text-dim); }          /* comment */
+        pre .k { color: var(--accent-light); }      /* keyword */
+        pre .s { color: var(--green); }              /* string */
+        pre .n { color: var(--orange); }             /* number */
+        pre .f { color: var(--cyan); }               /* function name */
+        pre .p { color: var(--blue); }               /* parameter/variable */
+
+        /* ─── FUNCTION SIGNATURE BOX ─── */
+        .fn-sig {
+            background: rgba(108,92,231,0.08);
+            border: 1px solid rgba(108,92,231,0.25);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            padding: 10px 16px;
+            margin: 14px 0 8px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--accent-light);
+        }
+        .fn-file {
+            font-size: 0.78em;
+            color: var(--text-dim);
+            margin-bottom: 2px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ─── CALLOUT ─── */
+        .callout {
+            border-left: 4px solid var(--accent);
+            background: rgba(108,92,231,0.06);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 14px 0;
+            font-size: 0.92em;
+        }
+        .callout-green { border-left-color: var(--green); background: rgba(0,206,201,0.05); }
+        .callout-orange { border-left-color: var(--orange); background: rgba(253,203,110,0.05); }
+        .callout-red { border-left-color: var(--red); background: rgba(255,107,107,0.05); }
+
+        /* ─── LISTS ─── */
+        ul, ol { margin-left: 22px; margin-bottom: 12px; }
+        li { margin-bottom: 5px; }
+        li::marker { color: var(--accent-light); }
+
+        /* ─── TABLES ─── */
+        table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9em; }
+        th { background: var(--surface-2); padding: 8px 12px; text-align: left; font-weight: 600; color: var(--accent-light); border-bottom: 2px solid var(--border); }
+        td { padding: 7px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+
+        /* ─── FLOW ARROW ─── */
+        .flow { text-align: center; color: var(--text-dim); font-size: 1.1em; margin: 6px 0; }
+
+        .toc { margin: 20px 0; }
+        .toc a { color: var(--blue); text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .toc li { margin-bottom: 3px; }
+
+        hr { border: none; border-top: 1px dashed var(--border); margin: 30px 0; }
+    </style>
+</head>
+<body>
+
+<div class="page">
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  TITLE                                                            -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h1>Core Architecture — Technical Report</h1>
+<p class="subtitle">ToolUniverse RAG Agent · Internal Pipeline, Functions & Data Flow</p>
+
+<p>
+    This report provides a detailed, function-level analysis of the <strong>core pipeline</strong>
+    that powers the ToolUniverse RAG Agent. It covers every module in <code>backend/core/</code>,
+    the tool abstraction layer, the execution cache, and the data vault — explaining
+    <em>what each function does</em>, <em>how it does it</em>, and <em>why it was designed that way</em>.
+</p>
+
+<!-- ─── TABLE OF CONTENTS ─── -->
+<h2>Table of Contents</h2>
+<ol class="toc">
+    <li><a href="#s1">The Request Lifecycle — End-to-End Data Flow</a></li>
+    <li><a href="#s2">The Entry Point — <code>app.py :: chat()</code></a></li>
+    <li><a href="#s3">Phase 1: The Planner — <code>planner.py</code></a></li>
+    <li><a href="#s4">Phase 2: The Orchestrator — <code>orchestrator.py</code></a></li>
+    <li><a href="#s5">Phase 3: The Synthesizer — <code>synthesis.py</code></a></li>
+    <li><a href="#s6">The Prompt Templates — <code>prompts.py</code></a></li>
+    <li><a href="#s7">The Tool Abstraction — <code>base_tool.py</code> & <code>registry.py</code></a></li>
+    <li><a href="#s8">The Execution Cache — <code>cache.py</code></a></li>
+    <li><a href="#s9">The Vault Catalog — <code>catalog_loader.py</code> & <code>vault_catalog.py</code></a></li>
+    <li><a href="#s10">Tool Implementation Examples</a></li>
+    <li><a href="#s11">Complete Function Reference Table</a></li>
+</ol>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SECTION 1: LIFECYCLE                                             -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<hr id="s1">
+<h2>1. The Request Lifecycle — End-to-End Data Flow</h2>
+
+<p>Every user query passes through three sequential phases. The entire cycle happens inside a single HTTP request:</p>
+
+<pre>
+<span class="c">User prompt (string)</span>
+        │
+        ▼
+┌───────────────────────────────────────────┐
+│  <span class="k">PHASE 1 — PLANNER</span>  (planner.py)          │
+│  ① discover_skills() → keyword match      │
+│  ② Build tool menu from registry           │
+│  ③ Execute VaultCatalogTool (catalog)      │
+│  ④ Assemble system prompt                  │
+│  ⑤ LLM call → JSON execution plan         │
+└───────────────────────────────────────────┘
+        │  list[dict] — 1 to 6 steps
+        ▼
+┌───────────────────────────────────────────┐
+│  <span class="k">PHASE 2 — ORCHESTRATOR</span>  (orchestrator.py)│
+│  For each step:                            │
+│    ① Resolve $PREV/$STEP_N placeholders    │
+│    ② Check SQLite cache (SHA-256 hash)     │
+│    ③ If not cached → tool.execute(**args)  │
+│    ④ Store result in cache                 │
+│    ⑤ Append to executed[] list             │
+└───────────────────────────────────────────┘
+        │  list[dict] — executed plan with results
+        ▼
+┌───────────────────────────────────────────┐
+│  <span class="k">PHASE 3 — SYNTHESIZER</span>  (synthesis.py)    │
+│  ① Build synthesis prompt (date + prompt   │
+│    + full execution trace as JSON)         │
+│  ② LLM call → Markdown report             │
+│  ③ Strip &lt;thinking&gt; blocks                │
+└───────────────────────────────────────────┘
+        │  string — final markdown response
+        ▼
+<span class="c">JSON response to client</span>
+</pre>
+
+<div class="callout">
+    <strong>Design Principle:</strong> The pipeline is strictly linear — no loops, no re-planning, no self-correction. The Planner reasons once, the Orchestrator executes deterministically, and the Synthesizer narrates. This makes the system predictable, debuggable, and easy to trace through logs.
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SECTION 2: APP.PY                                                -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<hr id="s2">
+<h2>2. The Entry Point — <code>app.py</code></h2>
+
+<p>The FastAPI application defines a single core endpoint that triggers the full agent cycle.</p>
+
+<div class="fn-file">backend/app.py</div>
+<div class="fn-sig">async def chat(request: Request) → JSONResponse</div>
+
+<p>This is the main HTTP handler, decorated as <code>@app.post("/api/chat")</code>. It receives a JSON payload with a <code>message</code> field (the user's prompt) and orchestrates the three phases.</p>
+
+<h3>Internal flow:</h3>
+<ol>
+    <li><strong>Payload extraction:</strong> Parses the raw HTTP body with <code>await request.json()</code>. If the JSON is invalid or the <code>message</code> field is empty, it returns a <code>400</code> error immediately.</li>
+    <li><strong>Synchronous agent wrapper:</strong> Because the core pipeline uses blocking I/O (HTTP requests to external APIs, SQLite calls, LLM calls), it defines an inner function <code>run_agent_sync()</code> and delegates it to FastAPI's <code>run_in_threadpool()</code>. This prevents the synchronous pipeline from blocking the async event loop.</li>
+    <li><strong>Three-phase execution:</strong></li>
+</ol>
+
+<pre>
+<span class="k">def</span> <span class="f">run_agent_sync</span>():
+    <span class="c"># Phase 1 — Plan</span>
+    steps = <span class="f">generate_plan</span>(prompt)         <span class="c"># → list[dict]</span>
+
+    <span class="c"># Phase 2 — Execute</span>
+    executed_plan = <span class="f">execute_plan</span>(steps)   <span class="c"># → list[dict] with results</span>
+
+    <span class="c"># Phase 3 — Synthesize</span>
+    reply = <span class="f">generate_synthesis</span>(prompt, executed_plan)  <span class="c"># → str</span>
+
+    <span class="k">return</span> steps, executed_plan, reply
+</pre>
+
+<h3>Response structure:</h3>
+<p>The endpoint assembles a response that contains not just the final reply, but the entire execution trace for transparency:</p>
+
+<pre>
+{
+    <span class="s">"reply"</span>:        <span class="c">"... markdown report ...",</span>
+    <span class="s">"tool_used"</span>:    <span class="s">"aemet_forecast"</span>,           <span class="c">// primary tool (or "multi_tool")</span>
+    <span class="s">"tools_used"</span>:   [<span class="s">"aemet_forecast"</span>, <span class="s">"csv_reader"</span>],  <span class="c">// all tools</span>
+    <span class="s">"plan"</span>:         [ ... ],                    <span class="c">// raw plan from Planner</span>
+    <span class="s">"tool_results"</span>: [ ... ],                    <span class="c">// full executed plan</span>
+    <span class="s">"tool_data"</span>:    { ... }                     <span class="c">// last tool's raw result</span>
+}
+</pre>
+
+<div class="callout-green callout">
+    <strong>Why expose the full trace?</strong> The frontend uses <code>tool_results</code> to render the Data Results panel and the Tool Status indicators. It also allows debugging — you can see exactly what the Planner decided, what arguments were resolved, and what each tool returned.
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SECTION 3: PLANNER                                               -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<hr id="s3">
+<h2>3. Phase 1: The Planner — <code>planner.py</code></h2>
+
+<p>The Planner is the most complex module. It transforms a raw user prompt into a structured, executable plan. It involves four distinct operations: skill discovery, skill selection, tool menu construction, and LLM plan generation.</p>
+
+<!-- ──── generate_plan ──── -->
+<h3>3.1 — <code>generate_plan(prompt)</code></h3>
+
+<div class="fn-file">backend/core/planner.py · Lines 88–171</div>
+<div class="fn-sig">def generate_plan(prompt: str) → list[dict]</div>
+
+<p>This is the top-level entry point for Phase 1. It returns a list of step dictionaries, each containing a <code>tool</code> name and an <code>arguments</code> dict.</p>
+
+<h4>Step-by-step internal logic:</h4>
+
+<p><strong>① Skill Routing (no LLM call):</strong></p>
+<pre>
+all_skills = <span class="f">discover_skills</span>()                    <span class="c"># scan backend/skills/*.md</span>
+selected_skills = <span class="f">select_relevant_skills</span>(prompt, all_skills)  <span class="c"># keyword match</span>
+</pre>
+<p>If skills match, it assembles a <code>skills_section</code> string by concatenating the full Markdown body of each matched skill, wrapped with headers. If no skills match, this section is an empty string.</p>
+
+<p><strong>② Tool Menu Construction:</strong></p>
+<pre>
+tools = <span class="f">list_all_tools</span>()   <span class="c"># returns list of tool names from static registry</span>
+
+<span class="k">for</span> tool_name <span class="k">in</span> tools:
+    tool_instance = <span class="f">get_tool</span>(tool_name)    <span class="c"># lazy import + instantiate</span>
+    schema = tool_instance.<span class="f">get_schema</span>()    <span class="c"># introspect execute() type hints</span>
+    <span class="c"># Build a line like:</span>
+    <span class="c"># - "csv_reader": Reads CSV files. Arguments: {filename: &lt;string required&gt;, ...}</span>
+</pre>
+<p>For each registered tool, it imports the class, generates its JSON schema (via <code>BaseTool.get_schema()</code>), and formats it into a human-readable menu line. This menu is what the LLM sees as its "toolbox".</p>
+
+<p><strong>③ Vault Catalog Injection:</strong></p>
+<pre>
+catalog_tool = <span class="f">VaultCatalogTool</span>()
+raw_catalog = catalog_tool.<span class="f">execute</span>()     <span class="c"># scans CSVs, PDFs, Drive, Neo4j</span>
+catalog_str = json.dumps(raw_catalog, indent=<span class="n">2</span>)
+</pre>
+<p>The Planner physically executes the <code>VaultCatalogTool</code> to discover what data sources exist. This JSON blob is injected into the system prompt so the LLM knows which CSV filenames, PDF documents, and Google Drive files are available to query.</p>
+
+<p><strong>④ LLM Call:</strong></p>
+<pre>
+system_msg = <span class="f">get_planner_prompt</span>(catalog_str, skills_section, tools_text)
+llm = <span class="f">LLMClient</span>(role=<span class="s">"planner"</span>, temperature=<span class="n">0.1</span>)
+result = llm.<span class="f">generate_json</span>(system_msg + f<span class="s">'\n\nUser Prompt: "{prompt}"\nJSON Response:'</span>)
+</pre>
+<p>The assembled prompt (catalog + skills + tool menu + user query) is sent to the LLM. The <code>generate_json()</code> method handles parsing the response: it strips <code>&lt;thinking&gt;</code> blocks, looks for JSON inside markdown fences, and falls back to finding the first <code>{</code> or <code>[</code> character.</p>
+
+<p><strong>⑤ Plan Extraction and Capping:</strong></p>
+<pre>
+steps = result.get(<span class="s">"steps"</span>, [])
+<span class="k">if not</span> steps:
+    steps = [{<span class="s">"tool"</span>: <span class="s">"general"</span>, <span class="s">"arguments"</span>: {}}]   <span class="c"># fallback</span>
+<span class="k">return</span> steps[:<span class="n">6</span>]   <span class="c"># hard cap at 6 steps</span>
+</pre>
+<p>If the LLM returns an empty or malformed plan, the function defaults to a single <code>general</code> step (which makes the Synthesizer handle the query as free-form conversation). A hard cap of <strong>6 steps</strong> prevents runaway plans.</p>
+
+<!-- ──── discover_skills ──── -->
+<h3>3.2 — <code>discover_skills()</code></h3>
+
+<div class="fn-file">backend/core/planner.py · Lines 34–57</div>
+<div class="fn-sig">def discover_skills() → list[dict]</div>
+
+<p>Scans the <code>backend/skills/</code> directory for all <code>.md</code> files and returns a list of skill metadata dictionaries.</p>
+
+<pre>
+<span class="k">for</span> skill_path <span class="k">in</span> sorted(SKILLS_DIR.<span class="f">glob</span>(<span class="s">"*.md"</span>)):
+    raw = skill_path.<span class="f">read_text</span>(encoding=<span class="s">"utf-8"</span>)
+    name, description, body = <span class="f">_parse_skill_frontmatter</span>(raw)
+    skills.append({
+        <span class="s">"folder_name"</span>: skill_path.stem,
+        <span class="s">"name"</span>:        name <span class="k">or</span> skill_path.stem,
+        <span class="s">"description"</span>: description,
+        <span class="s">"body"</span>:        body,         <span class="c"># full markdown content (without frontmatter)</span>
+    })
+</pre>
+
+<p>Each <code>.md</code> file uses YAML frontmatter with <code>name</code> and <code>description</code> fields. The function reads the entire file but separates the frontmatter from the body — this is important because only the body will be injected into the LLM context later, and only for matched skills.</p>
+
+<!-- ──── _parse_skill_frontmatter ──── -->
+<h3>3.3 — <code>_parse_skill_frontmatter(raw)</code></h3>
+
+<div class="fn-file">backend/core/planner.py · Lines 11–31</div>
+<div class="fn-sig">def _parse_skill_frontmatter(raw: str) → tuple[str, str, str]</div>
+
+<p>A lightweight YAML parser (does <strong>not</strong> use the <code>yaml</code> library — intentionally avoids the dependency). Looks for lines starting with <code>name:</code> and <code>description:</code> between the two <code>---</code> delimiters. Returns <code>(name, description, body)</code> where <code>body</code> is everything after the closing <code>---</code>.</p>
+
+<pre>
+<span class="k">if</span> raw.startswith(<span class="s">"---"</span>):
+    end = raw.find(<span class="s">"---"</span>, <span class="n">3</span>)           <span class="c"># find closing ---</span>
+    frontmatter = raw[<span class="n">3</span>:end]
+    body = raw[end + <span class="n">3</span>:].strip()
+    <span class="k">for</span> line <span class="k">in</span> frontmatter.splitlines():
+        <span class="k">if</span> line.startswith(<span class="s">"name:"</span>):
+            name = line[<span class="n">5</span>:].strip()
+        <span class="k">elif</span> line.startswith(<span class="s">"description:"</span>):
+            description = line[<span class="n">12</span>:].strip()
+</pre>
+
+<!-- ──── select_relevant_skills ──── -->
+<h3>3.4 — <code>select_relevant_skills(prompt, all_skills)</code></h3>
+
+<div class="fn-file">backend/core/planner.py · Lines 60–85</div>
+<div class="fn-sig">def select_relevant_skills(prompt: str, all_skills: list) → list[dict]</div>
+
+<p>Performs keyword matching between the user prompt and each skill's description. The matching works as follows:</p>
+
+<pre>
+prompt_lower = prompt.lower()
+
+<span class="k">for</span> skill <span class="k">in</span> all_skills:
+    <span class="c"># Tokenize the description into words &gt; 3 characters</span>
+    keywords = [w.lower() <span class="k">for</span> w <span class="k">in</span> re.findall(<span class="s">r'\b\w+\b'</span>, skill[<span class="s">"description"</span>]) <span class="k">if</span> len(w) &gt; <span class="n">3</span>]
+
+    <span class="c"># Check if ANY keyword appears in the user prompt</span>
+    matched = <span class="f">any</span>(kw <span class="k">in</span> prompt_lower <span class="k">for</span> kw <span class="k">in</span> keywords)
+
+    <span class="k">if</span> matched:
+        selected.append(skill)
+</pre>
+
+<p>The function extracts words longer than 3 characters from the skill's <code>description</code> field and checks if any of those words appear as substrings in the user's prompt. This is a deliberately simple heuristic — no embeddings, no LLM call — because it runs on every request and needs to be fast.</p>
+
+<div class="callout-orange callout">
+    <strong>Trade-off:</strong> This approach is fast (pure string matching, O(n·k)) but imprecise. A skill about "earthquake emergency protocols" would match any prompt containing "earthquake" or "protocols" but would miss semantically similar queries like "seismic activity response guidelines". A future improvement could use embedding similarity with a threshold.
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SECTION 4: ORCHESTRATOR                                         -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<hr id="s4">
+<h2>4. Phase 2: The Orchestrator — <code>orchestrator.py</code></h2>
+
+<p>The Orchestrator is a deterministic execution engine. It receives the JSON plan from the Planner and runs each step in sequence, resolving dependencies between steps and managing the execution cache.</p>
+
+<!-- ──── execute_plan ──── -->
+<h3>4.1 — <code>execute_plan(steps)</code></h3>
+
+<div class="fn-file">backend/core/orchestrator.py · Lines 64–123</div>
+<div class="fn-sig">def execute_plan(steps: list) → list[dict]</div>
+
+<p>The main loop. Takes a list of plan steps and produces a list of executed steps, each annotated with its result.</p>
+
+<pre>
+executed = []
+
+<span class="k">for</span> step <span class="k">in</span> steps:
+    tool_name = step.get(<span class="s">"tool"</span>, <span class="s">"general"</span>)
+    args = step.get(<span class="s">"arguments"</span>, {})
+
+    <span class="c"># ① Resolve cross-step dependencies</span>
+    resolved_args = <span class="f">_enrich_args_from_prior</span>(args, executed)
+
+    <span class="c"># ② Skip "general" tool (just a no-op placeholder)</span>
+    <span class="k">if</span> tool_name == <span class="s">"general"</span>:
+        executed.append({<span class="s">"tool"</span>: tool_name, <span class="s">"arguments"</span>: resolved_args, <span class="s">"result"</span>: <span class="k">None</span>})
+        <span class="k">continue</span>
+
+    <span class="c"># ③ Instantiate tool via lazy registry</span>
+    tool_instance = <span class="f">get_tool</span>(tool_name)
+
+    <span class="c"># ④ Check cache</span>
+    <span class="k">if</span> getattr(tool_instance, <span class="s">"cacheable"</span>, <span class="k">True</span>):
+        cached = <span class="f">get_cached_result</span>(tool_name, resolved_args)
+        <span class="k">if</span> cached <span class="k">is not None</span>:
+            executed.append({..., <span class="s">"result"</span>: cached, <span class="s">"cached"</span>: <span class="k">True</span>})
+            <span class="k">continue</span>
+
+    <span class="c"># ⑤ Execute the tool</span>
+    result = tool_instance.<span class="f">execute</span>(**resolved_args)
+
+    <span class="c"># ⑥ Cache successful results</span>
+    <span class="k">if</span> result.get(<span class="s">"status"</span>) != <span class="s">"error"</span>:
+        <span class="f">set_cached_result</span>(tool_name, resolved_args, result)
+
+    executed.append({<span class="s">"tool"</span>: tool_name, <span class="s">"arguments"</span>: resolved_args, <span class="s">"result"</span>: result})
+</pre>
+
+<p>Each entry in the output <code>executed</code> list contains:</p>
+<table>
+    <tr><th>Key</th><th>Type</th><th>Meaning</th></tr>
+    <tr><td><code>tool</code></td><td>str</td><td>Tool name (e.g. <code>"csv_reader"</code>)</td></tr>
+    <tr><td><code>arguments</code></td><td>dict</td><td>The resolved arguments (after placeholder substitution)</td></tr>
+    <tr><td><code>result</code></td><td>dict | str</td><td>The raw output from <code>tool.execute()</code>, or <code>None</code> for <code>general</code></td></tr>
+    <tr><td><code>cached</code></td><td>bool</td><td>If <code>True</code>, the result was served from cache without executing the tool</td></tr>
+    <tr><td><code>error</code></td><td>bool</td><td>If <code>True</code>, the tool threw an exception</td></tr>
+</table>
+
+<!-- ──── _resolve_placeholder ──── -->
+<h3>4.2 — <code>_resolve_placeholder(value, prior)</code></h3>
+
+<div class="fn-file">backend/core/orchestrator.py · Lines 20–53</div>
+<div class="fn-sig">def _resolve_placeholder(value, prior: list) → any</div>
+
+<p>Resolves a single placeholder string like <code>$PREV.data.0.postal</code> into the actual value from a prior step's result. This is the mechanism that allows the Planner to <strong>chain tool outputs</strong>.</p>
+
+<h4>Two resolution modes:</h4>
+
+<p><strong><code>$PREV.path</code> — Smart backwards search:</strong></p>
+<pre>
+<span class="k">if</span> token.startswith(<span class="s">"PREV."</span>):
+    path = token[<span class="n">5</span>:]               <span class="c"># e.g. "data.0.postal"</span>
+    <span class="c"># Search ALL prior steps from most recent to oldest</span>
+    <span class="k">for</span> step_idx <span class="k">in</span> range(len(prior) - <span class="n">1</span>, -<span class="n">1</span>, -<span class="n">1</span>):
+        source = prior[step_idx].get(<span class="s">"result"</span>) <span class="k">or</span> {}
+        val = <span class="f">_deep_get</span>(source, path)
+        <span class="k">if</span> val <span class="k">is not None</span>:
+            <span class="k">return</span> val
+</pre>
+<p><code>$PREV</code> does NOT simply look at the immediately prior step — it scans <strong>backwards through all executed steps</strong> until it finds a result that contains the requested path. This handles cases where step N-1 might fail but step N-2 has the needed data.</p>
+
+<p><strong><code>$STEP_N.path</code> — Explicit index reference:</strong></p>
+<pre>
+<span class="k">if</span> token.startswith(<span class="s">"STEP_"</span>):
+    idx = int(rest.partition(<span class="s">"."</span>)[<span class="n">0</span>])    <span class="c"># e.g. STEP_0 → idx=0</span>
+    source = prior[idx].get(<span class="s">"result"</span>)
+    <span class="k">return</span> <span class="f">_deep_get</span>(source, path)
+</pre>
+<p>Allows the Planner to reference a specific step by its 0-based index, rather than relying on backward search.</p>
+
+<!-- ──── _deep_get ──── -->
+<h3>4.3 — <code>_deep_get(obj, path)</code></h3>
+
+<div class="fn-file">backend/core/orchestrator.py · Lines 4–18</div>
+<div class="fn-sig">def _deep_get(obj, path: str) → any</div>
+
+<p>A generic path navigator for nested Python data structures. Splits the path by <code>.</code> and traverses dicts and lists accordingly.</p>
+
+<pre>
+<span class="k">for</span> part <span class="k">in</span> path.split(<span class="s">"."</span>):
+    <span class="k">if</span> isinstance(obj, list):
+        obj = obj[int(part)]        <span class="c"># numeric index for arrays</span>
+    <span class="k">elif</span> isinstance(obj, dict):
+        obj = obj.get(part)         <span class="c"># key lookup for dicts</span>
+</pre>
+
+<p>For example, given the path <code>data.0.municipio</code> and this object:</p>
+<pre>
+{
+    <span class="s">"data"</span>: [
+        {<span class="s">"municipio"</span>: <span class="s">"Valencia"</span>, <span class="s">"magnitud"</span>: <span class="s">"3.2"</span>},
+        {<span class="s">"municipio"</span>: <span class="s">"Alicante"</span>, <span class="s">"magnitud"</span>: <span class="s">"2.8"</span>}
+    ]
+}
+</pre>
+<p>It navigates: <code>obj["data"]</code> → <code>obj[0]</code> → <code>obj["municipio"]</code> → <code>"Valencia"</code>.</p>
+
+<!-- ──── _enrich_args_from_prior ──── -->
+<h3>4.4 — <code>_enrich_args_from_prior(arguments, prior)</code></h3>
+
+<div class="fn-file">backend/core/orchestrator.py · Lines 55–62</div>
+<div class="fn-sig">def _enrich_args_from_prior(arguments: dict, prior: list) → dict</div>
+
+<p>Iterates over every key-value pair in the step's <code>arguments</code> dict. For each value that starts with <code>$</code>, it calls <code>_resolve_placeholder()</code> to substitute the actual runtime value. Non-placeholder values are left untouched.</p>
+
+<pre>
+args = dict(arguments <span class="k">or</span> {})
+<span class="k">for</span> key, val <span class="k">in</span> list(args.items()):
+    resolved = <span class="f">_resolve_placeholder</span>(val, prior)
+    <span class="k">if</span> resolved <span class="k">is not None</span> <span class="k">and</span> resolved != val:
+        args[key] = str(resolved) <span class="k">if not</span> isinstance(resolved, str) <span class="k">else</span> resolved
+<span class="k">return</span> args
+</pre>
+
+<div class="callout">
+    <strong>Important detail:</strong> All resolved values are cast to <code>str</code> unless they are already strings. This is because tool parameters are always passed as keyword arguments to <code>execute(**kwargs)</code>, and most tool methods expect string inputs. This prevents type errors when a numeric value extracted from a prior step (e.g., a latitude <code>38.345</code>) is passed to a tool expecting <code>lat: str</code>.
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SECTION 5: SYNTHESIS                                             -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<hr id="s5">
+<h2>5. Phase 3: The Synthesizer — <code>synthesis.py</code></h2>
+
+<div class="fn-file">backend/core/synthesis.py · Lines 7–24</div>
+<div class="fn-sig">def generate_synthesis(prompt: str, executed_plan: list) → str</div>
+
+<p>The final stage. Takes the original user prompt and the complete execution trace (with all tool results) and produces a human-readable Markdown report.</p>
+
+<pre>
+<span class="k">def</span> <span class="f">generate_synthesis</span>(prompt, executed_plan):
+    current_date = datetime.now().strftime(<span class="s">"%Y-%m-%d %H:%M"</span>)
+    executed_plan_json = json.dumps(executed_plan, indent=<span class="n">2</span>)
+
+    <span class="c"># Build the synthesis prompt template</span>
+    synthesis_prompt = <span class="f">get_synthesis_prompt</span>(current_date, prompt, executed_plan_json)
+
+    <span class="c"># Call LLM with slightly higher temperature for natural prose</span>
+    llm = LLMClient(role=<span class="s">"synthesizer"</span>, temperature=<span class="n">0.3</span>)
+    reply = llm.<span class="f">generate</span>(synthesis_prompt).strip()
+
+    <span class="c"># Remove &lt;thinking&gt; blocks if the model generated any</span>
+    reply = re.sub(<span class="s">r'&lt;thinking&gt;.*?&lt;/thinking&gt;\s*'</span>, <span class="s">''</span>, reply, flags=re.DOTALL)
+
+    <span class="k">return</span> reply.strip()
+</pre>
+
+<h3>Key design decisions:</h3>
+<ul>
+    <li><strong>Full trace injection:</strong> The entire <code>executed_plan</code> list is serialized as JSON and embedded in the prompt. This means the Synthesizer sees every tool name, every argument, every result, and every error. It can cross-reference multiple data sources.</li>
+    <li><strong>Date injection:</strong> The current timestamp is injected so the LLM can correctly interpret temporal data (e.g., "is this earthquake recent?") without hallucinating the current date.</li>
+    <li><strong><code>temperature=0.3</code>:</strong> Higher than the Planner's <code>0.1</code> because the Synthesizer generates prose, not structured JSON. A slight creative boost improves readability without risking factual drift.</li>
+    <li><strong><code>&lt;thinking&gt;</code> stripping:</strong> The prompt instructs the LLM to reason in a <code>&lt;thinking&gt;</code> block before generating its final report. This block is stripped from the output so the user only sees the clean report.</li>
+</ul>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SECTION 6: PROMPTS                                               -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<hr id="s6">
+<h2>6. The Prompt Templates — <code>prompts.py</code></h2>
+
+<p>This module contains the two system prompts that drive the entire agent's behavior. Both are Python f-strings that receive dynamic data at runtime.</p>
+
+<!-- ──── get_planner_prompt ──── -->
+<h3>6.1 — <code>get_planner_prompt(catalog_str, skills_section, tools_text)</code></h3>
+
+<div class="fn-file">backend/core/prompts.py · Lines 3–39</div>
+<div class="fn-sig">def get_planner_prompt(catalog_str, skills_section, tools_text) → str</div>
+
+<p>Assembles the Planner system prompt from three dynamic blocks:</p>
+
+<table>
+    <tr><th>Parameter</th><th>Source</th><th>Content</th></tr>
+    <tr><td><code>catalog_str</code></td><td><code>VaultCatalogTool.execute()</code></td><td>JSON blob listing all available data — CSV filenames + columns, PDF metadata, Google Drive files</td></tr>
+    <tr><td><code>skills_section</code></td><td><code>select_relevant_skills()</code></td><td>Full Markdown bodies of matched skills, or empty string if no skills matched</td></tr>
+    <tr><td><code>tools_text</code></td><td>Registry iteration in <code>generate_plan()</code></td><td>One-line schema for each tool: name, description, parameters with types and required/optional</td></tr>
+</table>
+
+<p>The prompt contains several <strong>mandatory rules</strong> that constrain the LLM's behavior:</p>
+<ul>
+    <li><strong>Rule 1 — Cross-step dependencies:</strong> Teaches the LLM the <code>$PREV.path</code> placeholder syntax and forbids bracket notation</li>
+    <li><strong>Rule 2 — Sorting:</strong> Instructs the LLM to use <code>csv_reader</code> with <code>order_by</code> instead of <code>csv_aggregate</code> for finding max/min rows</li>
+    <li><strong>Rule 3 — Step limit:</strong> Max 6 steps; use only as many as needed</li>
+    <li><strong>Rule 4 — Chain of Thought:</strong> Forces a <code>&lt;thinking&gt;</code> block before the JSON output</li>
+    <li><strong>Rule 5 — Chitchat:</strong> Greetings and casual conversation must produce a single <code>general</code> step with empty arguments</li>
+    <li><strong>Rule 6 — Output format:</strong> JSON must be wrapped in a markdown code block</li>
+</ul>
+
+<p>The prompt also contains <strong>domain specializations</strong>:</p>
+<ul>
+    <li><strong>Seismic querying:</strong> Directs the LLM to use the local CSV file <code>pelsiscav_clean_seismic_catalog.csv</code> for historical data, and the <code>siscova_earthquakes</code> API tool for live data</li>
+    <li><strong>Google Drive RAG:</strong> Instructs the LLM to look up filenames in the vault catalog and pass them as string arguments to <code>drive_read_sheet</code>, explicitly forbidding <code>$PREV</code> for Drive file names</li>
+</ul>
+
+<!-- ──── get_synthesis_prompt ──── -->
+<h3>6.2 — <code>get_synthesis_prompt(current_date, prompt, executed_plan_json)</code></h3>
+
+<div class="fn-file">backend/core/prompts.py · Lines 42–66</div>
+<div class="fn-sig">def get_synthesis_prompt(current_date, prompt, executed_plan_json) → str</div>
+
+<p>Builds the Synthesizer prompt. It receives:</p>
+<ul>
+    <li><code>current_date</code> — a formatted timestamp so the LLM doesn't flag current-year data as "future"</li>
+    <li><code>prompt</code> — the original user question</li>
+    <li><code>executed_plan_json</code> — the full execution trace serialized as JSON</li>
+</ul>
+
+<p>The prompt instructs the Synthesizer to perform <strong>four specific analytical tasks</strong>:</p>
+<ol>
+    <li><strong>Cross-Source Analysis:</strong> Connect data from all tools into a unified narrative</li>
+    <li><strong>Multi-Input Reasoning:</strong> Identify relationships and validation rules across sources</li>
+    <li><strong>Resolve Discrepancies:</strong> If two tools return conflicting data, resolve it logically</li>
+    <li><strong>Structured Explanation:</strong> Present the final answer as a polished Markdown report</li>
+</ol>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SECTION 7: TOOL ABSTRACTION                                      -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<hr id="s7">
+<h2>7. The Tool Abstraction — <code>base_tool.py</code> & <code>registry.py</code></h2>
+
+<p>Every tool in the system follows a strict contract defined by two components: an abstract base class and a lazy registry.</p>
+
+<!-- ──── BaseTool ──── -->
+<h3>7.1 — <code>BaseTool</code> (Abstract Base Class)</h3>
+
+<div class="fn-file">backend/core/base_tool.py · Lines 5–62</div>
+<div class="fn-sig">class BaseTool(ABC)</div>
+
+<p>Defines the interface that every tool must implement. Has four class-level attributes and two methods:</p>
+
+<table>
+    <tr><th>Attribute</th><th>Type</th><th>Default</th><th>Purpose</th></tr>
+    <tr><td><code>name</code></td><td>str</td><td><code>"BaseTool"</code></td><td>Unique tool identifier (must match registry key)</td></tr>
+    <tr><td><code>description</code></td><td>str</td><td><code>"Base description"</code></td><td>Human-readable description shown to the Planner LLM</td></tr>
+    <tr><td><code>category</code></td><td>str</td><td><code>"general"</code></td><td>Grouping category (DATA, API, ANALYSIS, DISCOVERY)</td></tr>
+    <tr><td><code>cacheable</code></td><td>bool</td><td><code>True</code></td><td>Whether the Orchestrator should cache results for this tool</td></tr>
+</table>
+
+<h4><code>execute(**kwargs)</code> — Abstract method</h4>
+<p>Every subclass must implement this method. It receives keyword arguments (the resolved arguments from the plan step) and must return a result — typically a <code>dict</code> with a <code>"status"</code> key.</p>
+
+<h4><code>get_schema()</code> — Automatic schema generation</h4>
+<p>This classmethod uses Python's <code>inspect.signature()</code> to introspect the <code>execute()</code> method's parameters and type annotations at runtime:</p>
+
+<pre>
+<span class="k">@classmethod</span>
+<span class="k">def</span> <span class="f">get_schema</span>(cls):
+    sig = inspect.<span class="f">signature</span>(cls.execute)    <span class="c"># inspect the execute method</span>
+
+    <span class="k">for</span> name, param <span class="k">in</span> sig.parameters.items():
+        <span class="k">if</span> name == <span class="s">"self"</span>: <span class="k">continue</span>
+
+        <span class="c"># Map Python types to JSON schema types</span>
+        <span class="k">if</span>   param.annotation == int:   param_type = <span class="s">"integer"</span>
+        <span class="k">elif</span> param.annotation == bool:  param_type = <span class="s">"boolean"</span>
+        <span class="k">elif</span> param.annotation == float: param_type = <span class="s">"number"</span>
+        <span class="k">elif</span> param.annotation == list:  param_type = <span class="s">"array"</span>
+        <span class="k">else</span>:                          param_type = <span class="s">"string"</span>
+
+        properties[name] = {<span class="s">"type"</span>: param_type}
+
+        <span class="c"># Parameters without defaults are required</span>
+        <span class="k">if</span> param.default == inspect.Parameter.empty:
+            required.append(name)
+</pre>
+
+<div class="callout-green callout">
+    <strong>Why this matters:</strong> When the Planner builds the tool menu, it calls <code>get_schema()</code> on every tool. The schema is rendered as a line in the prompt so the LLM knows exactly what parameters each tool accepts, their types, and which ones are required. This means adding a new tool with typed parameters is automatically reflected in the LLM's knowledge — no prompt editing required.
+</div>
+
+<!-- ──── registry ──── -->
+<h3>7.2 — The Lazy Registry (<code>registry.py</code>)</h3>
+
+<div class="fn-file">backend/core/registry.py · Lines 1–44</div>
+
+<p>The registry provides three key functions:</p>
+
+<h4><code>@register_tool(name, category)</code> — Decorator</h4>
+<p>A decorator applied to tool classes. It sets the <code>name</code> and <code>category</code> attributes on the class. Note: this decorator does <strong>not</strong> add the tool to the runtime registry — that's handled by the static map.</p>
+
+<h4><code>list_all_tools()</code> — List tool names</h4>
+<pre>
+<span class="k">def</span> <span class="f">list_all_tools</span>():
+    <span class="k">return</span> list(_LAZY_REGISTRY.keys())   <span class="c"># instant — no imports needed</span>
+</pre>
+<p>Returns all registered tool names from the pre-computed static map. This is O(1) and does not trigger any module imports.</p>
+
+<h4><code>get_tool(tool_name)</code> — Lazy instantiation</h4>
+<pre>
+<span class="k">def</span> <span class="f">get_tool</span>(tool_name):
+    module_path, class_name = _LAZY_REGISTRY[tool_name]
+    module = importlib.<span class="f">import_module</span>(module_path)    <span class="c"># import on first use</span>
+    tool_class = getattr(module, class_name)
+    <span class="k">return</span> tool_class()                                <span class="c"># instantiate</span>
+</pre>
+<p>The first time a tool is requested, its module is imported via <code>importlib.import_module()</code>, the class is retrieved by name, and a new instance is created. This is the <strong>lazy loading pattern</strong> — tools that are never called in a session are never imported.</p>
+
+<h4>The Static Map (<code>_lazy_registry_static.py</code>)</h4>
+<p>An auto-generated Python file mapping tool names to <code>[module_path, class_name]</code> tuples:</p>
+<pre>
+STATIC_TOOL_MAP = {
+    <span class="s">"aemet_fire_risk"</span>:     [<span class="s">"backend.tools.api.aemet_fire_risk"</span>,     <span class="s">"AemetFireRiskTool"</span>],
+    <span class="s">"csv_reader"</span>:          [<span class="s">"backend.tools.local.csv_reader"</span>,        <span class="s">"CsvReaderTool"</span>],
+    <span class="s">"vault_pdf_search"</span>:    [<span class="s">"backend.tools.local.vault_pdf_search"</span>,  <span class="s">"VaultPdfSearchTool"</span>],
+    <span class="c">// ... 22 more entries</span>
+}
+</pre>
+<p>This map is generated by a build script (<code>scripts/generate_lazy_registry.py</code>) that scans all tool modules for <code>@register_tool</code> decorators and writes the map to disk. It only needs to be regenerated when tools are added or removed.</p>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SECTION 8: CACHE                                                 -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<hr id="s8">
+<h2>8. The Execution Cache — <code>cache.py</code></h2>
+
+<p>The cache sits between the Orchestrator and the tools. It prevents redundant API calls by storing and retrieving results in a local SQLite database.</p>
+
+<h3>8.1 — Database Schema</h3>
+
+<pre>
+CREATE TABLE IF NOT EXISTS <span class="f">tool_cache</span> (
+    <span class="p">hash_key</span>   TEXT PRIMARY KEY,
+    <span class="p">tool_name</span>  TEXT,
+    <span class="p">result</span>     TEXT,               <span class="c">-- JSON-serialized result dict</span>
+    <span class="p">timestamp</span>  DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+</pre>
+
+<p>The database is stored at <code>backend/vault/cache/execution_cache.sqlite</code> and is auto-created on module import via <code>init_db()</code>.</p>
+
+<h3>8.2 — <code>_generate_hash(tool_name, kwargs)</code></h3>
+
+<div class="fn-file">backend/core/cache.py · Lines 26–30</div>
+<div class="fn-sig">def _generate_hash(tool_name: str, kwargs: dict) → str</div>
+
+<pre>
+<span class="k">def</span> <span class="f">_generate_hash</span>(tool_name, kwargs):
+    dict_str = json.dumps(kwargs, sort_keys=<span class="k">True</span>)   <span class="c"># deterministic key ordering</span>
+    combined = f<span class="s">"{tool_name}::{dict_str}"</span>
+    <span class="k">return</span> hashlib.sha256(combined.encode(<span class="s">"utf-8"</span>)).hexdigest()
+</pre>
+
+<p>The cache key is a SHA-256 hash of the tool name concatenated with the JSON-serialized arguments (with sorted keys for determinism). This means the same tool called with the same arguments will always produce the same hash, regardless of the order the arguments were specified.</p>
+
+<h3>8.3 — <code>get_cached_result(tool_name, kwargs)</code></h3>
+
+<div class="fn-file">backend/core/cache.py · Lines 32–41</div>
+<div class="fn-sig">def get_cached_result(tool_name: str, kwargs: dict) → dict | None</div>
+
+<p>Looks up the hash key in SQLite. If a row exists, the <code>result</code> column (stored as a JSON string) is deserialized and returned. If no cache hit, returns <code>None</code>.</p>
+
+<h3>8.4 — <code>set_cached_result(tool_name, kwargs, result)</code></h3>
+
+<div class="fn-file">backend/core/cache.py · Lines 43–57</div>
+<div class="fn-sig">def set_cached_result(tool_name: str, kwargs: dict, result: any) → None</div>
+
+<p>Serializes the result to JSON and writes it to SQLite using <code>INSERT OR REPLACE</code> — if the hash already exists, the old result is overwritten. If the result is not JSON-serializable (e.g., contains bytes), it falls back to <code>json.dumps(str(result))</code>.</p>
+
+<div class="callout-orange callout">
+    <strong>Important behavior:</strong> The Orchestrator checks <code>tool_instance.cacheable</code> before cache lookup. Tools like <code>aemet_fire_risk</code>, <code>aemet_warnings</code>, and <code>vision_map_analyzer</code> set <code>cacheable = False</code> because their data is real-time. Additionally, the Orchestrator <strong>never caches error results</strong> — if <code>result.get("status") == "error"</code>, the cache write is skipped.
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SECTION 9: VAULT CATALOG                                         -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<hr id="s9">
+<h2>9. The Vault Catalog — <code>catalog_loader.py</code> & <code>vault_catalog.py</code></h2>
+
+<p>The Vault Catalog is a critical piece of the pipeline — it's the mechanism that tells the Planner <strong>what data exists</strong>. Without it, the LLM would have no idea which files, APIs, or cloud sources to query.</p>
+
+<h3>9.1 — Catalog Loader (<code>catalog_loader.py</code>)</h3>
+
+<p>Provides functions to read and write the JSON catalog files stored in <code>backend/vault/catalogs/</code>:</p>
+
+<table>
+    <tr><th>Function</th><th>File</th><th>Purpose</th></tr>
+    <tr><td><code>load_csvs_catalog()</code></td><td><code>csvs_index.json</code></td><td>Returns a dict mapping CSV filenames to their column schemas</td></tr>
+    <tr><td><code>load_pdfs_catalog()</code></td><td><code>pdfs_index.json</code></td><td>Returns PDF metadata including summaries, chunk counts, and the Pinecone index name</td></tr>
+    <tr><td><code>load_drive_catalog()</code></td><td><code>drive_catalog.json</code></td><td>Returns cached Google Drive file metadata (names + column schemas)</td></tr>
+    <tr><td><code>save_csvs_catalog(data)</code></td><td><code>csvs_index.json</code></td><td>Persists updated CSV catalog (used by ingestion pipeline)</td></tr>
+    <tr><td><code>save_pdfs_catalog(data)</code></td><td><code>pdfs_index.json</code></td><td>Persists updated PDF catalog (used by ingestion pipeline)</td></tr>
+</table>
+
+<p>Each function uses <code>ensure_vault_dirs()</code> from <code>vault_paths.py</code> to create the directory structure if it doesn't exist, making the system self-initializing on first run.</p>
+
+<h3>9.2 — <code>VaultCatalogTool.execute()</code></h3>
+
+<div class="fn-file">backend/tools/local/vault_catalog.py · Lines 15–141</div>
+<div class="fn-sig">def execute(self) → dict</div>
+
+<p>This tool is unique because the Planner <strong>executes it directly</strong> during plan generation (not as part of the Orchestrator's loop). It performs five scans:</p>
+
+<ol>
+    <li><strong>Local CSVs:</strong> Loads <code>csvs_index.json</code> and filters out massive legacy files (<code>CHJ_OpenData</code>, <code>Sismicidad_Historica</code>) to keep the token footprint small</li>
+    <li><strong>Local PDFs:</strong> Loads <code>pdfs_index.json</code> with summaries and chunk counts for each indexed PDF</li>
+    <li><strong>Local TXT/MD:</strong> Walks the vault directory tree (excluding <code>cache/</code> and <code>catalogs/</code>) for text and markdown files</li>
+    <li><strong>Neo4j:</strong> Attempts a Cypher query to check graph status, labels, and node count (currently disconnected)</li>
+    <li><strong>Google Drive:</strong> Loads the Drive catalog and strips large metadata fields, then queries the Drive API for a quick 5-file preview to verify the connection</li>
+</ol>
+
+<div class="callout">
+    <strong>Token optimization:</strong> The catalog output is deliberately compressed. CSV entries only include filenames and column lists. Google Drive entries are reduced to just <code>name</code> and <code>columns</code>. Legacy CSVs with thousands of columns are excluded entirely. This is critical because this JSON blob is injected into every single Planner prompt — a bloated catalog would waste tokens on every request.
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SECTION 10: TOOL EXAMPLES                                        -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<hr id="s10">
+<h2>10. Tool Implementation Examples</h2>
+
+<p>To illustrate how the <code>BaseTool</code> contract is implemented in practice, here are two representative tools from different categories.</p>
+
+<h3>10.1 — <code>CsvReaderTool</code> (Data category)</h3>
+
+<div class="fn-file">backend/tools/local/csv_reader.py</div>
+<div class="fn-sig">class CsvReaderTool(BaseTool) → execute(filename, filter_column, filter_value, filter_operator, ...)</div>
+
+<p>A rich query engine for CSV files. The <code>execute()</code> method delegates to <code>read_csv_data()</code> which:</p>
+
+<ol>
+    <li><strong>Resolves the file path</strong> via <code>_resolve_csv_path(filename)</code> — searches <code>vault/csvs/</code>, <code>vault/processed_data/</code>, and <code>backend/data/</code> (legacy) for the requested filename</li>
+    <li><strong>Opens and parses</strong> the CSV with Python's <code>csv.DictReader</code></li>
+    <li><strong>Applies up to two independent filters:</strong> Each filter has a column, value, and operator (<code>contains</code>, <code>==</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>). Column matching is case-insensitive</li>
+    <li><strong>Strips geometry columns</strong> automatically — removes columns named <code>geometry</code>, <code>geom</code>, <code>wkt</code>, <code>geojson</code>, <code>the_geom</code>, <code>shape</code> to prevent multi-megabyte WKT blobs from inflating the response</li>
+    <li><strong>Sorts results</strong> if <code>order_by</code> is specified — attempts numeric sort first, falls back to string sort</li>
+    <li><strong>Caps at <code>max_rows</code></strong> (default 500) and flags <code>truncated: true</code> if the cap was hit</li>
+</ol>
+
+<p>The companion <code>CsvAggregateTool</code> provides server-side aggregation (<code>sum</code>, <code>count</code>, <code>avg</code>, <code>min</code>, <code>max</code>) over <strong>all</strong> rows without the row cap, with optional <code>group_by</code> support.</p>
+
+<h3>10.2 — <code>VaultPdfSearchTool</code> (Semantic retrieval)</h3>
+
+<div class="fn-file">backend/tools/local/vault_pdf_search.py</div>
+<div class="fn-sig">class VaultPdfSearchTool(BaseTool) → execute(query, top_k=4)</div>
+
+<p>Performs semantic search over PDF documents using vector embeddings. The <code>execute()</code> method:</p>
+
+<ol>
+    <li><strong>Embeds the query</strong> using the Google Gemini Embedding API (<code>text-embedding-004</code> model, 768 dimensions):
+<pre>
+client = genai.Client(api_key=google_api_key)
+response = client.models.<span class="f">embed_content</span>(
+    model=<span class="s">"text-embedding-004"</span>,
+    contents=query,
+    config={<span class="s">"output_dimensionality"</span>: <span class="n">768</span>}
+)
+embedding = response.embeddings[<span class="n">0</span>].values    <span class="c"># 768-dim float vector</span>
+</pre></li>
+    <li><strong>Queries Pinecone</strong> with the embedding vector to find the top-k most similar document chunks:
+<pre>
+pc = Pinecone(api_key=api_key)
+index = pc.Index(<span class="s">"tfm-vault"</span>)
+res = index.<span class="f">query</span>(vector=embedding, top_k=top_k, include_metadata=<span class="k">True</span>, namespace=<span class="s">"vault-pdfs"</span>)
+</pre></li>
+    <li><strong>Formats results</strong> — for each match, extracts the text chunk (capped at 2000 chars), the source filename, the chunk index, and the similarity score</li>
+</ol>
+
+<div class="callout-green callout">
+    <strong>This is the "R" in RAG:</strong> The PDF search tool is the purest implementation of Retrieval-Augmented Generation in the system. The user's query is embedded, similar document chunks are retrieved from the vector store, and those chunks are passed to the Synthesizer LLM to generate a grounded answer.
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  SECTION 11: FUNCTION REFERENCE                                   -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<hr id="s11">
+<h2>11. Complete Function Reference Table</h2>
+
+<p>Every public function in the core pipeline, organized by module:</p>
+
+<table>
+    <tr><th>Module</th><th>Function</th><th>Role</th></tr>
+    <tr><td rowspan="4"><code>planner.py</code></td>
+        <td><code>generate_plan(prompt)</code></td><td>Main entry — assembles prompt, calls LLM, returns list of steps</td></tr>
+    <tr><td><code>discover_skills()</code></td><td>Scans <code>backend/skills/*.md</code>, reads frontmatter, returns list of skill dicts</td></tr>
+    <tr><td><code>select_relevant_skills(prompt, skills)</code></td><td>Keyword-matches user prompt against skill descriptions, returns matched skills</td></tr>
+    <tr><td><code>_parse_skill_frontmatter(raw)</code></td><td>Parses YAML frontmatter without the yaml library, returns (name, description, body)</td></tr>
+
+    <tr><td rowspan="4"><code>orchestrator.py</code></td>
+        <td><code>execute_plan(steps)</code></td><td>Main loop — resolves deps, checks cache, executes tools, returns results</td></tr>
+    <tr><td><code>_resolve_placeholder(value, prior)</code></td><td>Resolves <code>$PREV.path</code> and <code>$STEP_N.path</code> to runtime values from prior steps</td></tr>
+    <tr><td><code>_deep_get(obj, path)</code></td><td>Navigates nested dicts/lists with dot-separated path strings</td></tr>
+    <tr><td><code>_enrich_args_from_prior(args, prior)</code></td><td>Iterates all arguments and resolves any that start with <code>$</code></td></tr>
+
+    <tr><td><code>synthesis.py</code></td>
+        <td><code>generate_synthesis(prompt, executed_plan)</code></td><td>Serializes trace to JSON, builds synthesis prompt, calls LLM, strips thinking blocks</td></tr>
+
+    <tr><td rowspan="2"><code>prompts.py</code></td>
+        <td><code>get_planner_prompt(catalog, skills, tools)</code></td><td>Returns the Planner system prompt with injected catalog, skills, and tool menu</td></tr>
+    <tr><td><code>get_synthesis_prompt(date, prompt, trace)</code></td><td>Returns the Synthesizer system prompt with injected date, user query, and execution trace</td></tr>
+
+    <tr><td rowspan="2"><code>base_tool.py</code></td>
+        <td><code>BaseTool.execute(**kwargs)</code></td><td>Abstract method — tool implementation entry point</td></tr>
+    <tr><td><code>BaseTool.get_schema()</code></td><td>Introspects <code>execute()</code> type hints to auto-generate JSON parameter schema</td></tr>
+
+    <tr><td rowspan="3"><code>registry.py</code></td>
+        <td><code>@register_tool(name, category)</code></td><td>Decorator — sets name/category on tool class</td></tr>
+    <tr><td><code>get_tool(tool_name)</code></td><td>Lazy-imports module, instantiates tool class, returns instance</td></tr>
+    <tr><td><code>list_all_tools()</code></td><td>Returns all tool names from static map (no imports)</td></tr>
+
+    <tr><td rowspan="4"><code>cache.py</code></td>
+        <td><code>init_db()</code></td><td>Creates the SQLite table if it doesn't exist (runs on import)</td></tr>
+    <tr><td><code>_generate_hash(tool_name, kwargs)</code></td><td>SHA-256 hash of tool name + sorted JSON args</td></tr>
+    <tr><td><code>get_cached_result(tool_name, kwargs)</code></td><td>Looks up hash in SQLite, returns deserialized result or None</td></tr>
+    <tr><td><code>set_cached_result(tool_name, kwargs, result)</code></td><td>Serializes result to JSON and writes to SQLite (INSERT OR REPLACE)</td></tr>
+
+    <tr><td rowspan="5"><code>catalog_loader.py</code></td>
+        <td><code>load_csvs_catalog()</code></td><td>Reads <code>csvs_index.json</code> — CSV filenames and column schemas</td></tr>
+    <tr><td><code>load_pdfs_catalog()</code></td><td>Reads <code>pdfs_index.json</code> — PDF summaries, chunk counts, Pinecone index</td></tr>
+    <tr><td><code>load_drive_catalog()</code></td><td>Reads <code>drive_catalog.json</code> — Google Drive file metadata</td></tr>
+    <tr><td><code>save_csvs_catalog(data)</code></td><td>Persists updated CSV catalog to disk</td></tr>
+    <tr><td><code>save_pdfs_catalog(data)</code></td><td>Persists updated PDF catalog to disk</td></tr>
+</table>
+
+<hr>
+
+<p style="text-align:center; color: var(--text-dim); margin-top:30px; font-size: 0.85em;">
+    ToolUniverse RAG Agent · Core Architecture Technical Report · July 2026
+</p>
+
+</div><!-- /.page -->
+</body>
+</html>

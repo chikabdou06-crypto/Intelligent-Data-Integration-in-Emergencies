@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified RAG Agent — Command Center</title>
+    <meta name="description" content="Dashboard command center for the Unified RAG Agent — AEMET weather, seismic data, flood risk, and municipal analytics.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="app-shell">
+
+        <!-- ===== HEADER BAR ===== -->
+        <header class="header-bar">
+            <div class="header-brand">
+                <div class="header-logo">⚡</div>
+                <div>
+                    <div class="header-title">Unified RAG Agent</div>
+                    <div class="header-subtitle">COMMAND CENTER</div>
+                </div>
+            </div>
+            <div class="header-status-group">
+                <div class="status-chip">
+                    <span class="status-dot"></span>
+                    Backend Online
+                </div>
+                <div class="status-chip provider-toggle-chip" id="provider-toggle-chip" onclick="toggleProviderMenu()" title="Click to switch between Cloud (Gemini) and Local (Ollama)">
+                    <span class="status-dot" id="provider-status-dot"></span>
+                    <span id="provider-status-text">⚡ Auto: Gemini</span>
+                </div>
+                <div class="header-clock" id="header-clock">00:00:00</div>
+            </div>
+            <div class="provider-menu" id="provider-menu" style="display: none;">
+                <div class="provider-menu-title">SELECT LLM PROVIDER</div>
+                <div class="provider-option active" id="opt-auto" onclick="selectProviderMode('auto')">
+                    ⚡ <strong>Auto Fallback</strong>
+                    <span class="provider-sub">Gemini Cloud → Ollama Local</span>
+                </div>
+                <div class="provider-option" id="opt-gemini" onclick="selectProviderMode('gemini')">
+                    ☁️ <strong>Google Gemini (Cloud)</strong>
+                    <span class="provider-sub" id="status-gemini-sub">Checking...</span>
+                </div>
+                <div class="provider-option" id="opt-ollama" onclick="selectProviderMode('ollama')">
+                    💻 <strong>Ollama (Local Offline)</strong>
+                    <span class="provider-sub" id="status-ollama-sub">Checking...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN CONTENT: Chat + Dashboard ===== -->
+        <div class="main-content">
+
+            <!-- LEFT: Chat Panel -->
+            <section class="chat-panel">
+                <div class="chat-panel-header">
+                    <h2>Agent Console</h2>
+                    <span class="chat-panel-badge">LIVE</span>
+                </div>
+
+                <div class="chat-history" id="chat-history">
+                    <div class="message message-bot">
+                        <div class="message-bubble welcome-bubble">
+                            <h3>Welcome to the Command Center</h3>
+                            <p>Ask me about weather forecasts, seismic activity, flood risk, fire hazard, municipal demographics, or search through emergency protocols.</p>
+                            <div class="quick-tags">
+                                <span class="quick-tag" onclick="fillInput('¿Cuál es la previsión del tiempo para Valencia?')">🌤 Previsión Valencia</span>
+                                <span class="quick-tag" onclick="fillInput('¿Hay alertas meteorológicas activas?')">⚠️ Alertas activas</span>
+                                <span class="quick-tag" onclick="fillInput('¿Cuál es el riesgo de inundación en Alzira?')">🌊 Riesgo inundación</span>
+                                <span class="quick-tag" onclick="fillInput('Muéstrame los terremotos recientes')">📡 Terremotos</span>
+                                <span class="quick-tag" onclick="fillInput('¿Cuál es la población de San Vicente del Raspeig?')">👥 Demografía</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-bar">
+                    <form class="chat-form" id="chat-form">
+                        <input type="text" id="user-input" placeholder="Ask the agent anything..." autocomplete="off" required>
+                        <button type="submit" class="btn btn-send" id="send-btn">
+                            <svg class="send-svg" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- RIGHT: Dashboard Area -->
+            <div class="dashboard-area">
+
+                <!-- Top Row: Map + Tool Status -->
+                <div class="dashboard-top">
+                    <!-- Map / Image Viewer -->
+                    <div class="dash-panel">
+                        <div class="dash-panel-header">
+                            <span class="dash-panel-title">Visual Telemetry</span>
+                            <span class="dash-panel-badge badge-idle" id="map-badge">Awaiting</span>
+                        </div>
+                        <div class="map-viewer" id="map-display">
+                            <div class="map-empty-state">
+                                <div class="map-empty-icon">🗺️</div>
+                                <p>Maps and images will appear here</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tool Status Panel -->
+                    <div class="dash-panel">
+                        <div class="dash-panel-header">
+                            <span class="dash-panel-title">Tool Status</span>
+                            <button class="btn-browse-csv" id="open-database-btn">📊 CSV Browser</button>
+                        </div>
+                        <div class="tool-status-list" id="tool-status-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Row: Data Results -->
+                <div class="dashboard-bottom dash-panel">
+                    <div class="dash-panel-header">
+                        <span class="dash-panel-title">Data Results</span>
+                        <span class="dash-panel-badge badge-idle" id="data-badge">No data</span>
+                    </div>
+                    <div class="data-results-content" id="data-results">
+                        <div class="data-results-empty">Tool payloads and structured data will appear here after a query</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ===== FOOTER: Data Sources Strip ===== -->
+        <footer class="footer-strip">
+            <span class="footer-label">Sources</span>
+            <div id="data-sources-list">
+                <!-- Populated by vault.js -->
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ===== DATA SOURCE DETAIL MODAL ===== -->
+    <div class="modal-overlay" id="data-source-modal">
+        <div class="modal-container modal-small">
+            <div class="modal-header">
+                <h3 id="ds-modal-title">Data Source</h3>
+                <button class="close-modal-btn" id="ds-close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="ds-badges">
+                    <span class="badge badge-type" id="ds-modal-type">Type</span>
+                    <span class="badge badge-origin" id="ds-modal-origin">Origin</span>
+                </div>
+                <div class="ds-description" id="ds-modal-desc">Description goes here.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CSV DATABASE MODAL ===== -->
+    <div class="modal-overlay" id="database-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>CSV Database Explorer</h3>
+                <button class="close-modal-btn" id="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-description">Browse and preview the local CSV datasets used by the agent.</div>
+                <div class="csv-file-picker">
+                    <label for="csv-file-select">File:</label>
+                    <select id="csv-file-select">
+                        <option value="">Select a file...</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead><tr id="table-headers"><th>Loading...</th></tr></thead>
+                        <tbody id="table-rows"><tr><td>Select a file to preview data.</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
