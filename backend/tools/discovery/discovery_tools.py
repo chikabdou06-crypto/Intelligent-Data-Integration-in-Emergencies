@@ -41,8 +41,8 @@ class VaultDiscoverTool(BaseTool):
     description = (
         "Scans the entire vault and returns a structured inventory of all "
         "available data: raw PDFs, indexed PDFs (Pinecone), raw CSVs, "
-        "processed data (extracted tables), text/markdown files, "
-        "and preprocessing scripts. Use this FIRST when unsure which "
+        "processed data (extracted tables), and text/markdown files. "
+        "Use this FIRST when unsure which "
         "file or tool to use."
     )
     category = "DISCOVERY"
@@ -53,7 +53,7 @@ class VaultDiscoverTool(BaseTool):
         ----------
         section : str
             Which section to return.  One of:
-            'all', 'pdfs', 'csvs', 'processed', 'text', 'preprocessing'.
+            'all', 'pdfs', 'csvs', 'processed', 'text'.
             Defaults to 'all'.
         """
         ensure_vault_dirs()
@@ -115,17 +115,6 @@ class VaultDiscoverTool(BaseTool):
                         })
             out["text_files"] = {"count": len(txt_files), "files": txt_files}
 
-        # ── Preprocessing scripts available ───────────────────
-        if sec in ("all", "preprocessing"):
-            preproc_dir = os.path.join(
-                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                "preprocessing",
-            )
-            scripts = _scan_dir(preproc_dir, (".py",))
-            out["preprocessing_scripts"] = {
-                "directory": preproc_dir,
-                "scripts": scripts,
-            }
 
         return out
 

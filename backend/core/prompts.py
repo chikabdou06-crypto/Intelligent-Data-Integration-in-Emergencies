@@ -43,7 +43,7 @@ file_reader(filename*, sheet_name, filter_column, filter_value, max_rows, order_
 --- DISCOVERY TOOLS ---
 
 vault_discover(section)
-  section: string. One of: "all" (default), "pdfs", "csvs", "processed", "text", "preprocessing"
+  section: string. One of: "all" (default), "pdfs", "csvs", "processed", "text"
 
 tool_discover(category_filter)
   category_filter: string. One of: "DATA", "API", "DISCOVERY"
