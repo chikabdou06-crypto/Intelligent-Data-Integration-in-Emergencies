@@ -26,7 +26,7 @@ A diferencia de los sistemas RAG tradicionales basados únicamente en bases de d
 - **Orquestador multi-paso**: Ejecuta herramientas secuencialmente con resolución automática de dependencias entre pasos (`$PREV.data.0.campo`)
 - **Sintetizador**: Combina resultados de múltiples fuentes en respuestas estructuradas en markdown
 - **Cadena de fallback LLM**: Cambia automáticamente entre proveedores (Gemini → Hugging Face → Ollama) si hay rate limits o fallos
-- **Servidor MCP**: Expone todas las herramientas vía Model Context Protocol para clientes como Claude Desktop
+- **Servidor MCP**: Expone todas las herramientas vía Model Context Protocol para cualquier cliente MCP compatible
 - **Interfaz web integrada**: Frontend completo con chat, visualización de herramientas y explorador del vault
 - **Caché de catálogo**: Catálogo del vault pre-cargado en memoria para respuestas instantáneas
 - **Skills del agente**: Sistema de habilidades inyectadas dinámicamente para guiar el razonamiento del planificador
@@ -168,7 +168,7 @@ municipal-intelligence-agent/
 flowchart TB
     subgraph Cliente["Cliente"]
         WebUI["Frontend Web"]
-        MCP_Client["Cliente MCP (Claude Desktop)"]
+        MCP_Client["Cliente MCP externo"]
     end
 
     subgraph Servidor["Backend FastAPI"]
@@ -302,7 +302,7 @@ Accede a `http://127.0.0.1:8000` en tu navegador.
 ## Ejecutar como servidor MCP
 
 ```bash
-# Para conectar desde Claude Desktop u otros clientes MCP
+# Para conectar desde cualquier cliente MCP compatible
 python -m backend.mcp_core.mcp_server
 ```
 
