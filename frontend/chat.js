@@ -27,14 +27,11 @@ const TOOL_LABELS = {
 
 function getToolCategoryClass(toolUsed) {
     const t = toolUsed.toLowerCase();
-    if (["aemet_forecast", "aemet_warnings", "aemet_marine", "aemet_fire_risk", "aemet_historical", "patricova_flood_risk", "siscova_earthquakes", "siscova_scraper", "drive_list", "drive_read", "drive_read_sheet"].includes(t)) {
+    if (["aemet_forecast", "aemet_warnings", "aemet_marine", "aemet_fire_risk", "aemet_historical", "patricova_flood_risk", "siscova_earthquakes", "siscova_scraper"].includes(t)) {
         return "api";
     }
     if (["csv_list", "csv_reader", "csv_aggregate", "file_reader", "vault_catalog", "vault_pdf_search", "tool_discover", "vault_discover"].includes(t)) {
         return "data";
-    }
-    if (["supabase_list", "supabase_query"].includes(t)) {
-        return "mcp";
     }
     return "general";
 }
