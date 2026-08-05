@@ -1,6 +1,6 @@
- # ToolUniverse RAG Agent
+ # Municipal Intelligence Agent
 
-Welcome to the **ToolUniverse RAG Agent**. This project is a highly advanced, fully modular, and LangChain-free Retrieval-Augmented Generation (RAG) platform. 
+Welcome to the **Municipal Intelligence Agent**. This project is a highly advanced, fully modular, and LangChain-free Retrieval-Augmented Generation (RAG) platform. 
 
 It orchestrates a fleet of specialized plugins (tools) dynamically to answer complex user queries by synthesizing data from databases, graph networks, public APIs, and unstructured document vaults.
 

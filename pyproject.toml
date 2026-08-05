@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "unified-rag-agent"
 version = "0.1.0"
-description = "A highly modular, autonomous, multi-step RAG engine inspired by ToolUniverse."
+description = "A highly modular, autonomous, multi-step RAG engine designed for municipal open data."
 authors = [
     { name = "PCSTAR", email = "developer@example.com" }
 ]

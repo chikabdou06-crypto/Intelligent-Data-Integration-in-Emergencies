@@ -1,4 +1,4 @@
-# ToolUniverse RAG Agent
+# Municipal Intelligence Agent
 
 A highly capable, multi-modal, Retrieval-Augmented Generation (RAG) agent designed to interact with both local vaults of data and live public APIs. The agent acts as an emergency response, natural hazard, and telemetry analyst (specifically tailored for the Comunitat Valenciana region, but easily expandable).
 

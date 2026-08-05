@@ -25,7 +25,7 @@ apply_network_patches()
 
 from backend.core.registry import list_all_tools, get_tool
 
-server = Server("ToolUniverse")
+server = Server("Municipal Intelligence Agent")
 
 @server.list_tools()
 async def handle_list_tools() -> list[Tool]:
@@ -54,7 +54,7 @@ async def handle_call_tool(name: str, arguments: dict) -> list[TextContent]:
         return [TextContent(type="text", text=f'{{"status": "error", "message": "Failed to call MCP tool: {str(e)}"}}')]
 
 async def main():
-    print("[MCP] Starting ToolUniverse RAG MCP Server...", file=sys.stderr)
+    print("[MCP] Starting Municipal Intelligence MCP Server...", file=sys.stderr)
     async with stdio_server() as (read_stream, write_stream):
         await server.run(read_stream, write_stream, server.create_initialization_options())
 

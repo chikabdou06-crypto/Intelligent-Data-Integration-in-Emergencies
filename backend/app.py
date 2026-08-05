@@ -41,7 +41,7 @@ from backend.core.synthesis import generate_synthesis
 from backend.core.memory import memory
 from backend.core.tracer import log_trace, get_traces
 
-app = FastAPI(title="ToolUniverse RAG Agent", lifespan=lifespan)
+app = FastAPI(title="Municipal Intelligence Agent", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
