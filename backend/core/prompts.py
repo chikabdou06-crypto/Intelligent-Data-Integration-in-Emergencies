@@ -103,10 +103,6 @@ icv_wms_search(query*)
 
 --- OTHER ---
 
-web_search(query*, max_results)
-  query: string REQUIRED
-  max_results: int. Default 3, max 5
-
 vision_map_analyzer(image_url*, question*)
   image_url: string REQUIRED
   question: string REQUIRED

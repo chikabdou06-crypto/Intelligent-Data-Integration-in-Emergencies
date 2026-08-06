@@ -10,7 +10,7 @@ A diferencia de los sistemas RAG tradicionales basados únicamente en bases de d
 |--------|------|-------------|
 | [AEMET OpenData](https://opendata.aemet.es/) | API en tiempo real | Predicciones, avisos meteorológicos, climatología histórica, riesgo de incendios, rayos, montaña y costas |
 | [INE](https://www.ine.es/) | API en tiempo real | Búsqueda de operaciones estadísticas, listado de tablas y descarga de datos |
-| [BOE](https://www.boe.es/) | API en tiempo real | Resúmenes diarios y documentos del Boletín Oficial del Estado |
+
 | [PATRICOVA](https://visor.gva.es/visor/) | API geoespacial | Riesgo de inundación por coordenadas o nombre de municipio |
 | [SISCOVA](https://sismi.icv.gva.es/) | API + scraping | Catálogo sísmico en tiempo real de la Comunitat Valenciana |
 | [ICV WMS](https://www.icv.gva.es/) | API geoespacial | Búsqueda de capas cartográficas del Institut Cartogràfic Valencià |
@@ -33,7 +33,7 @@ A diferencia de los sistemas RAG tradicionales basados únicamente en bases de d
 
 ---
 
-## Herramientas disponibles (26)
+## Herramientas disponibles (23)
 
 ### Datos locales (6 herramientas)
 
@@ -68,15 +68,14 @@ A diferencia de los sistemas RAG tradicionales basados únicamente en bases de d
 | `siscova_scraper` | Scraping del catálogo sísmico completo |
 | `icv_wms_search` | Búsqueda de capas cartográficas WMS del ICV |
 
-### Datos públicos nacionales (5 herramientas)
+### Datos públicos nacionales (3 herramientas)
 
 | Herramienta | Descripción |
 |-------------|-------------|
 | `ine_search_operations` | Búsqueda de operaciones estadísticas del INE |
 | `ine_list_tables` | Listado de tablas disponibles por operación |
 | `ine_get_table_data` | Descarga de datos de una tabla del INE |
-| `boe_get_summary` | Resumen del BOE de una fecha específica |
-| `boe_get_document` | Documento completo del BOE por identificador |
+
 
 ### Descubrimiento y otros (3 herramientas)
 
@@ -84,7 +83,7 @@ A diferencia de los sistemas RAG tradicionales basados únicamente en bases de d
 |-------------|-------------|
 | `vault_discover` | Inventario estructurado de todos los ficheros del vault |
 | `tool_discover` | Lista de herramientas disponibles por categoría |
-| `web_search` | Búsqueda web via DuckDuckGo |
+
 | `vision_map_analyzer` | Análisis de imágenes cartográficas con Gemini Vision |
 | `general` | Respuestas conversacionales sin herramientas |
 
@@ -146,7 +145,7 @@ municipal-intelligence-agent/
 │   │   ├── tracer.py             # Trazabilidad de ejecución
 │   │   └── providers/            # Proveedores LLM (Gemini, HF, Ollama)
 │   ├── tools/
-│   │   ├── api/                  # Herramientas de APIs externas (AEMET, INE, BOE, SISCOVA...)
+│   │   ├── api/                  # Herramientas de APIs externas (AEMET, INE, SISCOVA...)
 │   │   ├── local/                # Herramientas de datos locales (CSV, PDF, vault)
 │   │   └── discovery/            # Herramientas de descubrimiento
 │   ├── skills/                   # Habilidades inyectadas al planificador
@@ -179,11 +178,11 @@ flowchart TB
             Synthesizer["Sintetizador"]
             LLM["LLM Client (Fallback)"]
         end
-        subgraph Tools["Herramientas (26)"]
+        subgraph Tools["Herramientas (23)"]
             LocalTools["Datos Locales (6)"]
             AemetTools["AEMET (8)"]
             RiskTools["Riesgos (4)"]
-            NationalTools["INE/BOE (5)"]
+            NationalTools["INE (3)"]
             DiscoveryTools["Descubrimiento (3)"]
         end
         MCP_Server["Servidor MCP"]
@@ -192,7 +191,7 @@ flowchart TB
     subgraph APIs["APIs Externas"]
         AEMET["AEMET OpenData"]
         INE["INE"]
-        BOE["BOE"]
+
         PATRICOVA["PATRICOVA"]
         SISCOVA["SISCOVA"]
     end
@@ -216,7 +215,7 @@ flowchart TB
     LLM -.->|"fallback"| Ollama
     AemetTools --> AEMET
     NationalTools --> INE
-    NationalTools --> BOE
+
     RiskTools --> PATRICOVA
     RiskTools --> SISCOVA
     LocalTools -->|"vault/"| Vault["72+ CSVs + PDFs"]
@@ -325,6 +324,6 @@ MIT License
 
 - [AEMET OpenData](https://opendata.aemet.es/) — API meteorológica
 - [INE](https://www.ine.es/) — Instituto Nacional de Estadística
-- [BOE](https://www.boe.es/) — Boletín Oficial del Estado
+
 - [Model Context Protocol](https://modelcontextprotocol.io/) — Especificación MCP
 - [FastAPI](https://fastapi.tiangolo.com/) — Framework web

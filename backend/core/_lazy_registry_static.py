@@ -34,14 +34,7 @@ STATIC_TOOL_MAP = {
         "backend.tools.api.aemet_warnings",
         "AemetWarningsTool"
     ],
-    "boe_get_summary": [
-        "backend.tools.api.boe_api",
-        "BoeGetSummaryTool"
-    ],
-    "boe_get_document": [
-        "backend.tools.api.boe_api",
-        "BoeGetDocumentTool"
-    ],
+
     "general": [
         "backend.tools.api.general",
         "GeneralTool"
@@ -78,10 +71,7 @@ STATIC_TOOL_MAP = {
         "backend.tools.api.vision_map_analyzer",
         "VisionMapAnalyzerTool"
     ],
-    "web_search": [
-        "backend.tools.api.web_search",
-        "WebSearchTool"
-    ],
+
     "vault_discover": [
         "backend.tools.discovery.discovery_tools",
         "VaultDiscoverTool"
