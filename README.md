@@ -75,7 +75,7 @@ El agente está diseñado en torno a una arquitectura modular de tipo **Plan-and
 ```mermaid
 flowchart TB
     subgraph Cliente["Interfaces de usuario"]
-        WebUI["Frontend Web (V1 / V2)"]
+        WebUI["Frontend Web"]
         MCP_Ext["Cliente MCP externo (Claude, Cursor...)"]
     end
 
@@ -223,7 +223,7 @@ El sistema implementa una base de datos local SQLite (`backend/vault/cache/execu
 #### Trazabilidad (`tracer.py`)
 - Cada ciclo completo del agente (Planificación → Ejecución → Síntesis) se registra como una fila en la tabla `agent_traces` de la misma base de datos SQLite.
 - Se almacena: el prompt del usuario, el plan JSON generado, los resultados de ejecución de cada herramienta, la respuesta sintetizada, las herramientas utilizadas, el número de reintentos y el tiempo total en milisegundos.
-- Estos datos alimentan el panel de telemetría de la interfaz web y permiten una auditoría completa del razonamiento interno del agente.
+- Estos datos permiten una auditoría completa del razonamiento interno del agente.
 
 ---
 
@@ -379,14 +379,9 @@ El vault local contiene datasets municipales y regionales pre-cargados en `backe
 
 ## Interfaz de usuario
 
-El sistema incluye dos versiones del frontend web:
+El sistema incluye un frontend web integrado accesible en `http://localhost:8000/`.
 
-| Versión | Ruta | Descripción |
-|---------|------|-------------|
-| **V1** (original) | `http://localhost:8000/` | Dashboard clásico con chat, explorador del vault, y tabla de datos CSV |
-| **V2** (premium) | `http://localhost:8000/v2/` | Diseño glassmorfismo con widgets de telemetría en tiempo real (temperatura, UV, alertas meteorológicas), mapa interactivo, selector de proveedor LLM y panel de fuentes de datos |
-
-Ambas versiones son interfaces estáticas (HTML + CSS + JS vanilla) servidas directamente por FastAPI sin frameworks adicionales.
+Este dashboard proporciona un chat interactivo, un explorador completo del vault (archivos indexados), y un visor integrado para las tablas de datos CSV. Es una interfaz estática (HTML + CSS + JS vanilla) servida directamente por FastAPI, sin depender de frameworks externos complejos.
 
 ---
 
@@ -453,8 +448,7 @@ municipal-intelligence-agent/
 │       ├── pdfs/                 # Documentos PDF para búsqueda semántica
 │       ├── catalogs/             # Catálogos JSON generados
 │       └── cache/                # Base de datos SQLite (caché + trazas)
-├── frontend/                     # Interfaz web V1
-├── frontend_v2/                  # Interfaz web V2 (glassmorfismo + telemetría)
+├── frontend/                     # Interfaz web interactiva
 ├── pyproject.toml                # Dependencias y configuración del proyecto
 ├── .env.example                  # Template de variables de entorno
 └── README.md
@@ -502,9 +496,7 @@ cp .env.example .env
 python -m uvicorn backend.app:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-Accede a:
-- `http://127.0.0.1:8000` — Interfaz V1
-- `http://127.0.0.1:8000/v2/` — Interfaz V2 (premium)
+Accede a `http://127.0.0.1:8000` en tu navegador para abrir el dashboard.
 
 ### Ejecutar como servidor MCP
 
