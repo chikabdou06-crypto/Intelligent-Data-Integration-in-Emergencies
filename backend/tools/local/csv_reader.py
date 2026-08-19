@@ -184,13 +184,15 @@ def read_csv_data(
                     rows.append(_strip_geometry(dict(row), extra_exclude))
 
         if order_by:
+            num_group = 1 if order_desc else 0
+            str_group = 0 if order_desc else 1
             def sort_key(r):
                 val = r.get(order_by, "")
-                # Try numeric sort first
+                # Try numeric sort first. Dynamically group to prevent mixed-type errors and ensure valid numbers float to top.
                 try:
-                    return float(str(val).replace(",", ""))
+                    return (num_group, float(str(val).replace(",", "")))
                 except (ValueError, TypeError):
-                    return str(val)
+                    return (str_group, str(val))
                     
             rows.sort(key=sort_key, reverse=order_desc)
             
@@ -395,8 +397,8 @@ class CsvAggregateTool(BaseTool):
         filter_column: str = None,
         filter_value: str = None,
         group_by: str | list = None,
-        filters: list = None,
-        **kwargs
+        filters: list = None
     ) -> dict:
-        return csv_aggregate(filename, aggregate_columns, operation, filter_column, filter_value, group_by, filters=filters, **kwargs)
+        return csv_aggregate(filename, aggregate_columns, operation, filter_column, filter_value, group_by, filters=filters)
+
 

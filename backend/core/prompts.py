@@ -103,10 +103,6 @@ icv_wms_search(query*)
 
 --- OTHER ---
 
-vision_map_analyzer(image_url*, question*)
-  image_url: string REQUIRED
-  question: string REQUIRED
-
 general()
   No parameters. For chitchat/greetings only.
 
@@ -123,22 +119,16 @@ Create an execution plan (1 to 6 steps) to assist the user with any data queries
 {catalog_str}
 ===========================================================
 
-Specializations:
-- SEISMIC QUERYING: To answer questions about historical earthquakes, catalog events, magnitude distributions, epicenters, or cluster patterns, query the local database file "pelsiscav_clean_seismic_catalog.csv" using "csv_reader" or "csv_aggregate". Use the "siscova_earthquakes" tool for live real-time seismic events.
-- LOCAL CSV RAG: If the user queries municipal data, employment statistics, education levels ("pais_nacimiento_y_nivel_estudios.csv" or "Sexo_y_nivel_estudios.csv"), rentals, distritos, or budgets for San Vicente (or San Vicente del Raspeig), these files reside in the local CSV vault. Retrieve data by passing the exact string filename to "csv_reader" or "csv_aggregate". DO NOT hallucinate file paths! Just pass the filename!
-- CROSS-REFERENCING SKILLS: When extracting data from a CSV to pass into an API tool (e.g. `csv_reader` -> `patricova_flood_risk`), use the explicit JSON path to the specific row index. 
-  Example: if Step 0 is `csv_reader`, Step 1 arguments for `patricova_flood_risk` MUST be:
-  {{"lat": "$STEP_0.data.0.lat", "lon": "$STEP_0.data.0.lon"}}
-  Do NOT guess other properties. The orchestrator will inject the coordinates exactly.
-
 ========== MANDATORY RULES ==========
-1. CROSS-STEP DEPENDENCIES: When a later step needs a value produced by a previous step, you MUST use the $PREV.path.to.field placeholder syntax in the argument value. The system resolves these at runtime. Use dot-separated paths. Use numeric indices for arrays (0-indexed). Example: "$PREV.data.0.nombre" extracts the nombre field from the first row of the previous step's data array. NEVER use bracket notation like $PREV['key'].
-2. SORTING: To find the row with the highest/lowest value, use csv_reader with order_by + order_desc + max_rows=1. Do NOT use csv_aggregate for this.
-3. LIMIT STEPS: Max 6 steps. Use only as many steps as genuinely needed — 1 step is fine for simple queries.
-4. FAST EXECUTION: Output ONLY the JSON code block directly. Do NOT include any <thinking> block or explanation.
-5. CHITCHAT ONLY: For pure greetings or casual pleasantries (e.g. 'hello', 'thanks', 'how are you'), output EXACTLY ONE step using the 'general' tool with empty arguments. DO NOT use 'general' for any analytical, economic, housing, environmental, or data questions—even if they are asked broadly or theoretically!
-6. ANALYTICAL & ECONOMIC QUESTIONS (DIRECT DATA FETCHING): Whenever the user asks any question about unemployment, employment, education, housing, income, social support, or municipal statistics—EVEN IF asked broadly or theoretically—you MUST DIRECTLY call data-reading tools on the relevant datasets! For example: include steps for `csv_reader(filename="paro_2008_2025.csv", max_rows=50)` AND `csv_reader(filename="pais_nacimiento_y_nivel_estudios.csv", max_rows=50)`. Always set max_rows=50 (or smaller) when calling csv_reader to prevent token quota errors. NEVER use `general` or discovery tools (`csv_list`) for these questions!
-7. OUTPUT: Respond ONLY with a valid JSON string wrapped in a markdown code block.
+1. DO NOT HALLUCINATE FILENAMES: You MUST use the EXACT filenames listed in the VAULT CATALOG above. NEVER guess or make up a filename (e.g., do not use "alquiler_municipios_2022.csv" or "precio_alquiler_alicante.csv" if they are not in the catalog). If a file's exact name is not obvious from the catalog, you must still choose the closest matching ACTUAL filename from the catalog (e.g., "ALQ_Secciones_2022_Alicante.csv").
+2. DYNAMIC DEPENDENCIES: Use `$STEP_X.path.to.field` syntax to pass variables between tools. The system resolves these at runtime. Use dot-separated paths and numeric indices for arrays. Example: "$STEP_1.data.0.nombre" extracts the nombre field from the first row of Step 1's data array. NEVER use bracket notation like $STEP_1['key'].
+3. SORTING: To find the row with the highest/lowest value, use csv_reader with order_by + order_desc + max_rows=1. Do NOT use csv_aggregate for this.
+4. AEMET MUNICIPALITY — NEVER PASS `Secciones` (10-digit census code): When chaining from an income/rental CSV to aemet_forecast, you MUST do a municipality lookup step first (see AEMET MUNICIPALITY CHAINING above). The `municipio` argument for aemet_forecast must be either a plain city name (e.g. "alicante") or a 5-digit INE code from the `código INE` field — NEVER a 10-digit `Secciones` value like `0301404026` or a 3-digit code like `014`.
+5. LIMIT STEPS: Max 6 steps. Use only as many steps as genuinely needed — 1 step is fine for simple queries.
+6. FAST EXECUTION: Output ONLY the JSON code block directly. Do NOT include any <thinking> block or explanation.
+7. CHITCHAT ONLY: For pure greetings or casual pleasantries (e.g. 'hello', 'thanks', 'how are you'), output EXACTLY ONE step using the 'general' tool with empty arguments. DO NOT use 'general' for any analytical, economic, housing, environmental, or data questions—even if they are asked broadly or theoretically!
+8. ANALYTICAL & ECONOMIC QUESTIONS (DIRECT DATA FETCHING): Whenever the user asks any question about unemployment, employment, education, housing, income, social support, or municipal statistics—EVEN IF asked broadly or theoretically—you MUST DIRECTLY call data-reading tools on the relevant datasets! Always set max_rows=50 (or smaller) when calling csv_reader to prevent token quota errors. NEVER use `general` or discovery tools (`csv_list`) for these questions!
+9. OUTPUT: Respond ONLY with a valid JSON string wrapped in a markdown code block.
 {skills_section}
 ========== Available Tools (Dynamic Registry) ==========
 {tools_text}
