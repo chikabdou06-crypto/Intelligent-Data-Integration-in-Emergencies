@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Economy & Demographics (Multi-CSV Cross-Reference)",
+    "prompt": "Can you cross-reference the registered unemployment data with the education levels for the municipality of Elche?",
+    "expected_tools": ["csv_reader"]
+  },
+  {
+    "name": "Relocation Planning (Static Data + Live API)",
+    "prompt": "I am planning to move to San Vicente del Raspeig. Could you tell me what the current housing rental prices are there, and also give me the daily weather forecast so I can plan my visit?",
+    "expected_tools": ["csv_reader", "aemet_forecast"]
+  }
+]

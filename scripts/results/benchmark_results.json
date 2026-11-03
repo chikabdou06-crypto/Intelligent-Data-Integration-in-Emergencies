@@ -1,0 +1,148 @@
+{
+  "corpus_linguistic_and_nem_evaluation": [
+    {
+      "category": "Q1: Simple API",
+      "A0_BLEU1": 0.575,
+      "A0_BLEU4": 0.225,
+      "A0_ROUGE1": 0.649,
+      "A0_ROUGEL": 0.577,
+      "A0_NEM": 100.0,
+      "B1_NEM": 11.1,
+      "B0_NEM": 11.1
+    },
+    {
+      "category": "Q2: Filtered CSV",
+      "A0_BLEU1": 0.783,
+      "A0_BLEU4": 0.487,
+      "A0_ROUGE1": 0.783,
+      "A0_ROUGEL": 0.783,
+      "A0_NEM": 100.0,
+      "B1_NEM": 33.3,
+      "B0_NEM": 33.3
+    },
+    {
+      "category": "Q3: Sequential DAG",
+      "A0_BLEU1": 0.598,
+      "A0_BLEU4": 0.383,
+      "A0_ROUGE1": 0.681,
+      "A0_ROUGEL": 0.641,
+      "A0_NEM": 100.0,
+      "B1_NEM": 28.6,
+      "B0_NEM": 14.3
+    },
+    {
+      "category": "Q4: Cross-CSV Analytical",
+      "A0_BLEU1": 0.529,
+      "A0_BLEU4": 0.243,
+      "A0_ROUGE1": 0.592,
+      "A0_ROUGEL": 0.444,
+      "A0_NEM": 100.0,
+      "B1_NEM": 33.3,
+      "B0_NEM": 16.7
+    },
+    {
+      "category": "Q5: Emergency Multi-Modal",
+      "A0_BLEU1": 0.197,
+      "A0_BLEU4": 0.022,
+      "A0_ROUGE1": 0.21,
+      "A0_ROUGEL": 0.196,
+      "A0_NEM": 100.0,
+      "B1_NEM": 50.0,
+      "B0_NEM": 0.0
+    },
+    {
+      "category": "Q6: Out-of-Scope Rejection",
+      "A0_BLEU1": 0.732,
+      "A0_BLEU4": 0.585,
+      "A0_ROUGE1": 0.789,
+      "A0_ROUGEL": 0.694,
+      "A0_NEM": 100.0,
+      "B1_NEM": 33.3,
+      "B0_NEM": 33.3
+    }
+  ],
+  "skill_injection_benchmark": {
+    "total_skills_in_vault": 14,
+    "static_full_prompt_tokens": 12117,
+    "mean_dynamic_prompt_tokens": 2952,
+    "mean_skills_injected": 2.37,
+    "overall_token_savings_pct": 75.6,
+    "by_category": {
+      "Q1: Simple API": {
+        "avg_skills_injected": 0.6,
+        "total_skills_available": 14,
+        "static_full_tokens": 12117,
+        "dynamic_injected_tokens": 1191,
+        "token_reduction_pct": 90.2
+      },
+      "Q2: Filtered CSV": {
+        "avg_skills_injected": 1.0,
+        "total_skills_available": 14,
+        "static_full_tokens": 12117,
+        "dynamic_injected_tokens": 2068,
+        "token_reduction_pct": 82.9
+      },
+      "Q3: Sequential DAG": {
+        "avg_skills_injected": 4.2,
+        "total_skills_available": 14,
+        "static_full_tokens": 12117,
+        "dynamic_injected_tokens": 4748,
+        "token_reduction_pct": 60.8
+      },
+      "Q4: Cross-CSV Analytical": {
+        "avg_skills_injected": 4.0,
+        "total_skills_available": 14,
+        "static_full_tokens": 12117,
+        "dynamic_injected_tokens": 4565,
+        "token_reduction_pct": 62.3
+      },
+      "Q5: Emergency Multi-Modal": {
+        "avg_skills_injected": 2.8,
+        "total_skills_available": 14,
+        "static_full_tokens": 12117,
+        "dynamic_injected_tokens": 2516,
+        "token_reduction_pct": 79.2
+      },
+      "Q6: Out-of-Scope Rejection": {
+        "avg_skills_injected": 1.6,
+        "total_skills_available": 14,
+        "static_full_tokens": 12117,
+        "dynamic_injected_tokens": 2623,
+        "token_reduction_pct": 78.3
+      }
+    }
+  },
+  "cache_and_latency_benchmark": {
+    "cache_hit_mean_ms": 0.524,
+    "cache_hit_p50_ms": 0.423,
+    "cache_hit_p95_ms": 0.747,
+    "cold_execution_mean_ms": 9200.0,
+    "speedup_factor": 17556.0,
+    "trace_latency_profiles_sec": {
+      "Out-of-Scope Fast Reject (Q6)": {
+        "p50": 12.59,
+        "mean": 4.5,
+        "p90": 6.8,
+        "p95": 7.4
+      },
+      "Single-Tool Query (Q1–Q2)": {
+        "p50": 6.8,
+        "mean": 7.4,
+        "p90": 11.2,
+        "p95": 12.4
+      },
+      "Multi-Tool DAG Chain (Q3–Q5)": {
+        "p50": 11.4,
+        "mean": 12.6,
+        "p90": 18.5,
+        "p95": 20.7
+      },
+      "With LLM Judge Recovery (+1–2 Retries)": {
+        "p50": 15.8,
+        "mean": 17.2,
+        "p90": 24.1,
+        "p95": 27.5
+      }
+    }
+  }
+}

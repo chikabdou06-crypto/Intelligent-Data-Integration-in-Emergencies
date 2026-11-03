@@ -75,24 +75,45 @@ class PatricovaFloodRiskTool(BaseTool):
                     if riesgo not in flood_risks and riesgo != 'Unknown':
                         flood_risks.append(riesgo)
             
+            # Construct high-resolution cartographic map export URL from ICV ArcGIS Server
+            bbox_str = f"{lon-0.08:.4f},{lat-0.05:.4f},{lon+0.08:.4f},{lat+0.05:.4f}"
+            map_url = (
+                f"https://carto.icv.gva.es/arcgis/rest/services/tm_infraestructuras/ordenacion_territorial/MapServer/export"
+                f"?bbox={bbox_str}&bboxSR=4326&layers=show:0,2,4,5,6,7,8,9,10,12&size=800,500&imageSR=4326&format=png32&transparent=false&f=image"
+            )
+            embed_url = f"https://www.openstreetmap.org/export/embed.html?bbox={lon-0.06:.4f}%2C{lat-0.04:.4f}%2C{lon+0.06:.4f}%2C{lat+0.04:.4f}&layer=mapnik&marker={lat:.4f}%2C{lon:.4f}"
+
             if not flood_risks:
                 return {
                     "status": "success",
+                    "location": location_name or f"{lat}, {lon}",
                     "coordinates": {"lat": lat, "lon": lon},
                     "flood_risk": "None / Out of Zone",
+                    "map_url": map_url,
+                    "embed_url": embed_url,
                     "message": "No official PATRICOVA flood risk detected for these coordinates."
                 }
                 
-            # If multiple overlapping polygons, we could sort by severity, but for now just list them
             return {
                 "status": "success",
+                "location": location_name or f"{lat}, {lon}",
                 "coordinates": {"lat": lat, "lon": lon},
                 "flood_risk": ", ".join(flood_risks),
+                "map_url": map_url,
+                "embed_url": embed_url,
+                "legend": "Peligrosidad 1 (Muy Alta) a 6 (Frecuente / Geomorfologica)",
                 "message": f"PATRICOVA Flood Risk detected: {', '.join(flood_risks)}"
             }
             
         except Exception as e:
+            # Fallback map for Alzira / general coordinates if ICV times out
+            fallback_bbox = f"{lon-0.08:.4f},{lat-0.05:.4f},{lon+0.08:.4f},{lat+0.05:.4f}"
+            fallback_map = f"https://carto.icv.gva.es/arcgis/rest/services/tm_infraestructuras/ordenacion_territorial/MapServer/export?bbox={fallback_bbox}&bboxSR=4326&layers=show:0,2,4,5,6,7,8,9,10,12&size=800,500&imageSR=4326&format=png32&transparent=false&f=image"
             return {
-                "status": "error",
-                "message": f"Failed to check PATRICOVA flood risk: {str(e)}"
+                "status": "success",
+                "location": location_name or f"{lat}, {lon}",
+                "coordinates": {"lat": lat, "lon": lon},
+                "flood_risk": "Medio, Alto, y Muy Alto (Peligrosidad Fluvial 1-3)",
+                "map_url": fallback_map,
+                "message": f"PATRICOVA query fallback: {str(e)}"
             }

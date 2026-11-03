@@ -61,3 +61,36 @@ class GeminiProvider(BaseLLMProvider):
                 last_error = e
                 
         raise Exception(f"All Gemini models failed. Last error: {last_error}")
+
+    def generate_with_schema(self, prompt: str, response_schema: dict) -> str:
+        """
+        Generates a response constrained to the provided JSON schema.
+        Uses Gemini's native structured output — the model cannot output
+        values outside the schema's enum constraints.
+        """
+        if not self.is_configured:
+            raise Exception("Gemini provider is not configured.")
+
+        last_error = None
+        for model in self.models:
+            print(f"[LLM] Attempting schema-constrained Gemini model: {model}")
+            try:
+                response = self.client.models.generate_content(
+                    model=model,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        temperature=self.temperature,
+                        response_mime_type="application/json",
+                        response_schema=response_schema,
+                    )
+                )
+                text_res = response.text
+                if not text_res:
+                    raise Exception("Gemini schema-constrained API returned empty response.")
+                return str(text_res)
+            except Exception as e:
+                err = str(e)
+                print(f"[LLM] Gemini schema {model} failed: {err[:200]}... Falling back.")
+                last_error = e
+
+        raise Exception(f"All Gemini schema models failed. Last error: {last_error}")

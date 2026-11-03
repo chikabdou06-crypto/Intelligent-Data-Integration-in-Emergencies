@@ -67,10 +67,6 @@ STATIC_TOOL_MAP = {
         "backend.tools.api.siscova_scraper",
         "SiscovaScraperTool"
     ],
-    "vision_map_analyzer": [
-        "backend.tools.api.vision_map_analyzer",
-        "VisionMapAnalyzerTool"
-    ],
 
     "vault_discover": [
         "backend.tools.discovery.discovery_tools",

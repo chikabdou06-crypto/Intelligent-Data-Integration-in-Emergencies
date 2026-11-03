@@ -1,3 +1,34 @@
+"""
+========================================================================================
+MUNICIPAL INTELLIGENCE AGENT - FORMAL SYSTEM PROMPTS & PROMPT CONTRACTS
+Master's Thesis: "Intelligent Data Integration in Emergencies"
+Academic Review & Implementation Documentation
+========================================================================================
+
+Prompt Engineering Methodology for Thesis Evaluators:
+-----------------------------------------------------
+This module centralizes the formal system instructions and prompt contracts used across
+the three operational phases of the agent:
+
+  1. Planner System Prompt (`get_planner_prompt` - Temperature T=0.1):
+     - Establishes the operational persona as the Municipal Intelligence Planner.
+     - Injects the closed-world physical Data Vault catalog (`catalog_str`).
+     - Dynamically mounts relevant domain skills (`skills_section`) selected via progressive routing.
+     - Advertises available tool JSON schemas (`tools_text`) queried via MCP.
+     - Enforces negative constraints: strictly forbidding invented filenames, forcing explicit
+       `$STEP_i.field` parameter piping, and requiring 100% fast rejection on out-of-scope prompts.
+
+  2. Isolated LLM Judge Prompt (`_invoke_llm_judge` in `orchestrator.py` - Temperature T=0.0):
+     - Operates in a fresh context window to evaluate rejected arguments against the failed tool's
+       schema and error trace, outputting only repaired JSON arguments.
+
+  3. Multi-Source Synthesizer Prompt (`get_synthesis_prompt` - Temperature T=0.3):
+     - Conditions on current UTC timestamp to prevent flagging recent datasets as "future-dated".
+     - Mandates strict factual grounding on the verified tool execution trace.
+     - Enforces explicit source citations (naming the specific CSV or API).
+     - Mandates embedding Markdown image links for cartographic `map_url` outputs.
+"""
+
 TOOL_PARAMETER_CHEATSHEET = """
 ========== TOOL PARAMETER CHEAT SHEET (USE EXACT NAMES) ==========
 CRITICAL: You MUST use the EXACT parameter names listed below. Do NOT invent parameters.
@@ -111,7 +142,14 @@ general()
 
 
 def get_planner_prompt(catalog_str: str, skills_section: str, tools_text: str) -> str:
-    """Returns the system prompt for the Planner LLM."""
+    """
+    Constructs the operational system prompt for the Planner LLM (Wang et al., 2023).
+
+    Injects:
+      - catalog_str: Verified physical filenames currently present on disk.
+      - skills_section: Filtered domain instructions from matched Markdown skills.
+      - tools_text: MCP-advertised tool signatures.
+    """
     return f"""You are an intelligent Multi-Tool RAG Assistant for the Comunitat Valenciana and Spain, specializing in municipal data, economics, demographics, emergency response, and natural hazards.
 Create an execution plan (1 to 6 steps) to assist the user with any data queries (like education, unemployment, demographics, budgets) or emergencies (like PELSISCAV, fire/flood risks, seismic activity). Use the available tools to query local CSV files and live APIs.
 
@@ -146,7 +184,12 @@ Respond ONLY with valid JSON in this exact format:
 
 
 def get_synthesis_prompt(current_date: str, prompt: str, executed_plan_json: str) -> str:
-    """Returns the system prompt for the Synthesis LLM."""
+    """
+    Constructs the operational system prompt for the Synthesizer LLM.
+
+    Enforces strict factual grounding against verified MCP execution records,
+    mandating explicit source attribution and embedded cartographic hazard maps.
+    """
     return f"""You are an intelligent Multi-Tool RAG Assistant for the Comunitat Valenciana and Spain, specializing in municipal data, economics, demographics, emergency response, and natural hazards.
 IMPORTANT: Today's date and time is {current_date}. Use this to correctly interpret all dates in the data. Do NOT flag current-year data as "future-dated".
 Your goal is to answer the user's prompt by synthesizing the results from all executed tools (live APIs and local vault files).
@@ -156,6 +199,7 @@ Analyze the data with extreme rigor:
 2. **Strict Factuality**: Do NOT hallucinate data. If the Execution Trace does not contain the answer, explicitly state that the data is unavailable.
 3. **Structured Brevity**: Provide the final answer concisely using bullet points. For each tool or data source used, explicitly state what information was retrieved (e.g., "From the AEMET forecast, we found..."). If a tool failed to retrieve data or encountered an error, explicitly state that it failed.
 4. **Conversational Greetings / Chitchat**: If the User Prompt is a greeting or general pleasantry (e.g. 'hello', 'hi', 'how are you', 'thank you') and no data tools were executed, respond politely and conversationally without mentioning missing tool data.
+5. **Visual Maps & Media**: If an executed tool returns a `map_url` or `image_url` (such as a cartographic flood risk map), ALWAYS include it directly in your response using markdown image syntax: `![Mapa de Peligrosidad PATRICOVA](map_url)` so that the web interface renders the flood map directly in the chat and telemetry console.
 
 User Prompt: "{prompt}"
 

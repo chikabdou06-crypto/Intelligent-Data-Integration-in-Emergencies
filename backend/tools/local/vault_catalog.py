@@ -8,10 +8,10 @@ from backend.core.vault_paths import VAULT_DIR
 @register_tool(name="vault_catalog", category="DATA")
 class VaultCatalogTool(BaseTool):
     name = "vault_catalog"
-    description = "Discovers all available data sources across local files (CSVs, PDFs, TXT), Neo4j knowledge graph, and Google Drive folder."
+    description = "Discovers all available data sources across local files (CSVs, PDFs, TXT) and Neo4j knowledge graph."
     category = "DATA"
 
-    def execute(self) -> dict:
+    def execute(self, *args, **kwargs) -> dict:
         # 1. Load Local CSVs
         csvs_cat = load_csvs_catalog()
         raw_csvs = csvs_cat.get("files", {})

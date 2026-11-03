@@ -27,7 +27,13 @@ export function renderMarkdown(text) {
 
     // Images: ![alt](url) — render inline images for maps/charts
     html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, url) => {
-        return `<div class="inline-image-container"><img src="${url}" alt="${alt}" class="inline-image" loading="lazy" onerror="this.outerHTML='<span class=\'image-error\'>[Image could not be loaded]</span>'"><div class="image-caption">${alt || 'Map / Image'}</div></div>`;
+        return `<div class="inline-image-container">
+            <img src="${url}" alt="${alt}" class="inline-image" loading="lazy" style="cursor: pointer;" onclick="window.open('${url}', '_blank')" onerror="this.outerHTML='<span class=\'image-error\'>[No se pudo cargar la cartografía en vivo]</span>'">
+            <div class="image-caption">
+                <span>🗺️ ${alt || 'Cartografía Oficial PATRICOVA'}</span>
+                <a href="javascript:void(0)" onclick="if(window.switchMainView) window.switchMainView('map');" style="margin-left:auto; color:var(--primary); font-size:11px; text-decoration:none; font-weight:600;">Ver en Visor Espacial ↗</a>
+            </div>
+        </div>`;
     });
 
     // Clickable links: [text](url) — render as clickable <a> tags

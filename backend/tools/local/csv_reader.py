@@ -142,10 +142,10 @@ def read_csv_data(
                 # Helper to evaluate a filter
                 def check_filter(f_col, f_val, f_op):
                     if not f_col or f_val is None: return True
-                    # Case-insensitive column search
+                    # Case-insensitive and trimmed column search
                     actual_col = None
                     for k in row.keys():
-                        if k and k.lower() == f_col.lower():
+                        if k and k.strip().lower() == f_col.strip().lower():
                             actual_col = k
                             break
                     if not actual_col: return False # Column not found, filter fails
@@ -184,10 +184,16 @@ def read_csv_data(
                     rows.append(_strip_geometry(dict(row), extra_exclude))
 
         if order_by:
+            actual_order_by = order_by
+            if rows:
+                for k in rows[0].keys():
+                    if k and k.strip().lower() == order_by.strip().lower():
+                        actual_order_by = k
+                        break
             num_group = 1 if order_desc else 0
             str_group = 0 if order_desc else 1
             def sort_key(r):
-                val = r.get(order_by, "")
+                val = r.get(actual_order_by, "")
                 # Try numeric sort first. Dynamically group to prevent mixed-type errors and ensure valid numbers float to top.
                 try:
                     return (num_group, float(str(val).replace(",", "")))
@@ -392,13 +398,19 @@ class CsvAggregateTool(BaseTool):
     def execute(
         self,
         filename: str,
-        aggregate_columns: str | list,
+        aggregate_columns: str | list = None,
         operation: str = "sum",
         filter_column: str = None,
         filter_value: str = None,
         group_by: str | list = None,
-        filters: list = None
+        filters: list = None,
+        *args,
+        **kwargs
     ) -> dict:
-        return csv_aggregate(filename, aggregate_columns, operation, filter_column, filter_value, group_by, filters=filters)
+        cols = aggregate_columns or kwargs.get("target_column") or kwargs.get("column") or kwargs.get("columns") or kwargs.get("agg_column") or kwargs.get("col")
+        if not cols:
+            return {"status": "error", "message": "aggregate_columns parameter is required."}
+        return csv_aggregate(filename, cols, operation, filter_column, filter_value, group_by, filters=filters, **kwargs)
+
 
 

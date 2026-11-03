@@ -195,6 +195,7 @@ export function initVaultModals() {
     const openDatabaseBtn = document.getElementById("open-database-btn");
     const closeModalBtn = document.getElementById("close-modal-btn");
     const csvFileSelect = document.getElementById("csv-file-select");
+    const csvSearchInput = document.getElementById("csv-search-input");
 
     if (openDatabaseBtn && databaseModal) {
         openDatabaseBtn.addEventListener("click", () => {
@@ -214,33 +215,99 @@ export function initVaultModals() {
             }
         });
     }
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && databaseModal && databaseModal.classList.contains("active")) {
+            databaseModal.classList.remove("active");
+        }
+    });
+
     if (csvFileSelect) {
-        csvFileSelect.addEventListener("change", () => loadCsvData());
+        csvFileSelect.addEventListener("change", () => loadCsvData(csvFileSelect.value));
+    }
+
+    if (csvSearchInput) {
+        csvSearchInput.addEventListener("input", () => {
+            filterCurrentCsvRows(csvSearchInput.value);
+        });
     }
 }
+
+let _cachedHeaders = [];
+let _cachedRows = [];
 
 export function populateCsvFileSelect(csvList) {
     const csvFileSelect = document.getElementById("csv-file-select");
     if (!csvFileSelect || !csvList?.available_files) return;
-    const files = Object.keys(csvList.available_files);
+    const files = Object.keys(csvList.available_files).sort();
     if (files.length === 0) return;
     csvFileSelect.innerHTML = files.map(f => `<option value="${f}">${f}</option>`).join("");
 }
 
-export async function loadCsvData() {
+export function renderTable(headers, rows, note = "") {
+    const headersRow = document.getElementById("table-headers");
+    const bodyRows = document.getElementById("table-rows");
+    const countBadge = document.getElementById("csv-row-badge");
+
+    if (!headersRow || !bodyRows) return;
+
+    headersRow.innerHTML = headers.map(h => `<th title="${h}">${h}</th>`).join("");
+
+    if (rows.length === 0) {
+        bodyRows.innerHTML = `<tr><td colspan="${headers.length || 1}" style="text-align:center; padding: 24px; color: var(--text-muted);">No matching rows found.</td></tr>`;
+        if (countBadge) countBadge.textContent = "0 rows";
+        return;
+    }
+
+    if (countBadge) {
+        countBadge.textContent = `${rows.length} rows`;
+    }
+
+    bodyRows.innerHTML = note + rows.map(row => {
+        return "<tr>" + headers.map(h => {
+            const val = row[h] !== undefined && row[h] !== null ? String(row[h]) : "";
+            return `<td title="${val}">${val}</td>`;
+        }).join("") + "</tr>";
+    }).join("");
+}
+
+export function filterCurrentCsvRows(query) {
+    if (!_cachedHeaders.length) return;
+    const q = (query || "").trim().toLowerCase();
+    if (!q) {
+        renderTable(_cachedHeaders, _cachedRows);
+        return;
+    }
+
+    const filtered = _cachedRows.filter(row => {
+        return _cachedHeaders.some(h => {
+            const val = row[h];
+            return val !== undefined && val !== null && String(val).toLowerCase().includes(q);
+        });
+    });
+
+    renderTable(_cachedHeaders, filtered);
+}
+
+export async function loadCsvData(selectedFile = "") {
     const csvFileSelect = document.getElementById("csv-file-select");
     const headersRow = document.getElementById("table-headers");
     const bodyRows = document.getElementById("table-rows");
+    const countBadge = document.getElementById("csv-row-badge");
+    const searchInput = document.getElementById("csv-search-input");
+
+    if (searchInput) searchInput.value = "";
+    if (countBadge) countBadge.textContent = "Loading...";
 
     if (!headersRow || !bodyRows) return;
 
     headersRow.innerHTML = "<th>Loading...</th>";
-    bodyRows.innerHTML = "<tr><td>Fetching data from backend...</td></tr>";
+    bodyRows.innerHTML = "<tr><td style='padding:24px;text-align:center;'>Fetching dataset from backend vault...</td></tr>";
 
-    const selectedFile = csvFileSelect ? csvFileSelect.value : "company_sales.csv";
+    const targetFile = selectedFile || (csvFileSelect ? csvFileSelect.value : "");
+    const url = targetFile ? `/api/csv-data?file=${encodeURIComponent(targetFile)}` : "/api/csv-data";
 
     try {
-        const response = await fetch(`/api/csv-data?file=${encodeURIComponent(selectedFile)}`);
+        const response = await fetch(url);
         const data = await response.json();
 
         if (data.csv_list) {
@@ -253,30 +320,23 @@ export async function loadCsvData() {
         const csvData = data.default_data;
 
         if (!csvData || csvData.status !== "success") {
-            bodyRows.innerHTML = "<tr><td>Error loading CSV data.</td></tr>";
+            bodyRows.innerHTML = `<tr><td style="color:var(--danger);padding:20px;">Error loading CSV: ${csvData?.message || "File unavailable"}</td></tr>`;
+            if (countBadge) countBadge.textContent = "Error";
             return;
         }
 
-        const headers = csvData.headers || [];
-        const rows = csvData.data || [];
-
-        headersRow.innerHTML = headers.map(h => `<th>${h}</th>`).join("");
-
-        if (rows.length === 0) {
-            bodyRows.innerHTML = `<tr><td colspan="${headers.length || 1}">No rows (headers only or empty file).</td></tr>`;
-            return;
-        }
+        _cachedHeaders = csvData.headers || [];
+        _cachedRows = csvData.data || [];
 
         let note = "";
         if (csvData.truncated) {
-            note = `<tr class="csv-note-row"><td colspan="${headers.length}">Showing ${csvData.returned_rows} of ${csvData.total_rows} rows (capped).</td></tr>`;
+            note = `<tr class="csv-note-row"><td colspan="${_cachedHeaders.length}" style="background:var(--accent-subtle);color:var(--accent);font-weight:600;padding:8px 16px;">Previewing ${_cachedRows.length} of ${csvData.total_rows || _cachedRows.length} rows from dataset.</td></tr>`;
         }
 
-        bodyRows.innerHTML = note + rows.map(row => {
-            return "<tr>" + headers.map(h => `<td>${row[h] || ""}</td>`).join("") + "</tr>";
-        }).join("");
+        renderTable(_cachedHeaders, _cachedRows, note);
 
     } catch (err) {
-        bodyRows.innerHTML = "<tr><td>Failed to fetch CSV data. Is the backend running?</td></tr>";
+        bodyRows.innerHTML = "<tr><td style='color:var(--danger);padding:24px;'>Failed to fetch CSV data. Is the backend server running?</td></tr>";
+        if (countBadge) countBadge.textContent = "Offline";
     }
 }
