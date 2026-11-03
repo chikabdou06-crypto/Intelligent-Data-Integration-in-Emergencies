@@ -97,8 +97,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Municipal Intelligence Agent",
-    description="Agentic Data Orchestration & Citizen Guidance in Emergencies",
+    title="Intelligent Data Integration in Emergencies - Agent Gateway",
+    description="Intelligent Agent in Emergencies: Autonomous Multi-Source Reasoning and Citizen Guidance (Comunitat Valenciana)",
     version="2.3.0",
     lifespan=lifespan
 )

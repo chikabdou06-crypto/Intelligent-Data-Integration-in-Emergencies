@@ -1,10 +1,48 @@
-# Municipal Intelligence Agent 🏙️
+# Intelligent Data Integration in Emergencies 🚨🏙️
+### *Intelligent Agent in Emergencies: Autonomous Multi-Source Reasoning and Citizen Guidance for Disaster Management*
 
-**Agente RAG autónomo y multi-herramienta para el análisis de datos municipales abiertos de la Comunitat Valenciana y España.**
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=flat&logo=python)](https://python.org)
+[![Model Context Protocol](https://img.shields.io/badge/MCP-Anthropic-blue.svg?style=flat)](https://modelcontextprotocol.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Un sistema de inteligencia artificial que integra datos demográficos, económicos, catastrales, medioambientales y de riesgos naturales en una única interfaz conversacional. A diferencia de los sistemas RAG tradicionales basados únicamente en bases de datos vectoriales, este agente selecciona y orquesta dinámicamente múltiples herramientas — APIs en tiempo real, datasets geoespaciales y CSVs demográficos locales — para responder consultas complejas que abarcan varios dominios.
+> **Trabajo Fin de Máster (Master's Thesis)**  
+> **Master's Degree in Artificial Intelligence** — Escuela Politécnica Superior, Universidad de Alicante  
+> **Author:** Chikh Abderrahmene  
+> **Supervisors:** José Ignacio Abreu Salas & Santiago Galiano Segura  
+> **Research Group:** Grupo de Procesamiento del Lenguaje y Sistemas de Información (GPLSI)  
+> **Academic Year:** 2025–2026
 
-> **Trabajo Fin de Máster** — Desarrollado como TFM en el ámbito de la inteligencia artificial aplicada a datos públicos municipales.
+---
+
+## 📋 Resumen / Abstract
+
+This proposal addresses a central challenge in emergency management: critical information is distributed across many heterogeneous and disconnected sources, including agencies, GIS layers, meteorological APIs, river-basin sensors, cadastral records, vulnerability studies, emergency plans, and other datasets that differ in format, access mode, and semantics. In the Comunitat Valenciana, this fragmentation is especially significant because emergency response depends on a broad ecosystem of 123 integrated agencies/providers, making it difficult to identify, combine, and interpret the right information quickly when time is critical.
+
+The proposed solution is an intelligent tool for citizens that turns this fragmented data environment into clear and usable guidance for personal decision-making during emergencies. In severe events such as a DANA flood, the tool would help citizens understand their personal risk, identify safe evacuation routes, check housing safety, and receive contextual self-protection instructions through a single unified service, reducing uncertainty and avoiding the need to consult multiple disconnected portals under pressure.
+
+---
+
+## 🎯 Objetivos Concretos (Specific Goals)
+
+* **Goal 1. Governed emergency data catalog:**  
+  Build a catalog of emergency-related data sources that identifies, organizes, and standardizes the most relevant information assets available for each scenario. This catalog should make it possible to locate, understand, and reuse heterogeneous data from multiple domains in a reliable and traceable way.
+
+* **Goal 2. Intelligent reasoning over the emergency data catalog:**  
+  Develop an intelligent reasoning system able to exploit the data catalog defined in Goal 1, selecting and combining the most relevant sources for each query to generate contextual, actionable, and explainable answers for emergency management and citizen self-protection.
+
+* **Goal 3. Citizen guidance interface:**  
+  Deliver a citizen-focused interface that translates emergency data into clear, usable, and context-aware guidance for personal decision-making. In the flood use case, this means helping citizens assess their personal risk, identify safe evacuation routes, check housing safety, and receive self-protection instructions through a single unified service instead of consulting multiple disconnected portals.
+
+---
+
+## 🔬 Metodología a Emplear (Methodology)
+
+1. **Define the emergency scenarios and user needs:** Analyze severe weather (DANA), hydrological risk, and civil protection requirements across the Comunitat Valenciana.
+2. **Build and govern the emergency data catalog:** Establish a unified, schema-validated catalog spanning 72 local tabular datasets, 10 live REST APIs, geospatial WMS layers (PATRICOVA, SISCOVA), and indexed PAM emergency protocols.
+3. **Develop the intelligent reasoning layer over the catalog:** Implement a two-stage Plan-and-Solve agent with topological DAG parameter resolution (`$STEP_i`), isolated LLM judge reflection loop ($T=0.0$), sub-millisecond SHA-256 caching, and multi-tier LLM failover.
+4. **Create the citizen guidance interface:** Deploy a unified Command Center interface providing interactive Leaflet maps, dynamic execution graphs, and clear, actionable self-protection directives.
+5. **Validate the system in realistic emergency use cases:** Execute an empirical benchmark across 30 complex scenarios evaluating tool call accuracy, factual non-empty extraction (NEM), lexical metrics (BLEU/ROUGE), and runtime latency.
 
 ---
 

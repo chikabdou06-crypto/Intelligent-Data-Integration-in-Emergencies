@@ -3,11 +3,11 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "unified-rag-agent"
-version = "0.1.0"
-description = "A highly modular, autonomous, multi-step RAG engine designed for municipal open data."
+name = "intelligent-data-integration-emergencies"
+version = "1.0.0"
+description = "Intelligent Data Integration in Emergencies: Autonomous Multi-Source Reasoning and Citizen Guidance for Municipal Risk Management"
 authors = [
-    { name = "PCSTAR", email = "developer@example.com" }
+    { name = "Chikh Abderrahmene", email = "nombre@alu.ua.es" }
 ]
 dependencies = [
     "python-dotenv>=1.0.0",
