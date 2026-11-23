@@ -54,6 +54,12 @@ class GeminiProvider(BaseLLMProvider):
                 text_res = response.text
                 if not text_res:
                     raise Exception("Gemini API returned an empty or None response.")
+                try:
+                    import backend.core.llm as llm_mod
+                    pretty = model.replace("models/", "").replace("-", " ").title().replace("Lite", "Lite")
+                    llm_mod.ACTIVE_MODEL_NAME = pretty
+                except Exception:
+                    pass
                 return str(text_res)
             except Exception as e:
                 err = str(e)

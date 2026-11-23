@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Intelligent Agent in Emergencies — Command Center</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css?v=2.1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+    <link rel="stylesheet" href="index.css?v=3.0">
 </head>
 <body>
     <div class="app-shell">
@@ -41,25 +42,21 @@
                 <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle Light / Dark Mode">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <div class="provider-toggle" id="provider-toggle-chip" title="Switch LLM Provider">
+                <div class="provider-toggle" id="provider-toggle-chip" title="Current Active LLM Model">
                     <span class="status-dot" id="provider-status-dot"></span>
-                    <span class="provider-chip-label" id="provider-status-text">Auto</span>
+                    <span class="provider-chip-label" id="provider-status-text">Gemini 3.5 Flash</span>
                 </div>
             </div>
             
             <!-- Provider Menu (Hidden by default) -->
             <div class="provider-menu" id="provider-menu" style="display: none;">
-                <div class="provider-menu-title">SELECT LLM PROVIDER</div>
-                <div class="provider-option active" id="opt-auto" onclick="selectProviderMode('auto')">
-                    ⚡ <strong>Auto Fallback</strong>
-                    <span class="provider-sub">Gemini Cloud → Ollama Local</span>
-                </div>
-                <div class="provider-option" id="opt-gemini" onclick="selectProviderMode('gemini')">
-                    ☁️ <strong>Google Gemini (Cloud)</strong>
+                <div class="provider-menu-title">ACTIVE LLM ENGINE</div>
+                <div class="provider-option active" id="opt-gemini" onclick="selectProviderMode('gemini')">
+                    ☁️ <strong>Gemini 3.5 Flash (Cloud)</strong>
                     <span class="provider-sub" id="status-gemini-sub">Checking...</span>
                 </div>
                 <div class="provider-option" id="opt-ollama" onclick="selectProviderMode('ollama')">
-                    💻 <strong>Ollama (Local Offline)</strong>
+                    💻 <strong>Qwen 2.5 7B (Ollama Local)</strong>
                     <span class="provider-sub" id="status-ollama-sub">Checking...</span>
                 </div>
             </div>
@@ -138,10 +135,15 @@
                         <h3>Municipal Intelligence Operational Command</h3>
                         <p>Real-time autonomous orchestrator connected to AEMET civil protection alerts, demographic CSV databases, and PATRICOVA spatial risk indexes.</p>
                         <div class="quick-tags">
-                            <span class="quick-tag" onclick="fillInput('Check weather and active warnings in Alicante')">Alicante Weather &amp; Alerts</span>
-                            <span class="quick-tag" onclick="fillInput('Are there any flood alerts in Comunitat Valenciana?')">Flood Hazards</span>
-                            <span class="quick-tag" onclick="fillInput('Show me the municipal employment and affiliation dataset')">CSV Records</span>
-                            <span class="quick-tag" onclick="switchMainView('map')">Open Spatial Map View 🗺️</span>
+                            <span class="quick-tag" onclick="cycleQuickPrompt('weather', this)" title="Click repeatedly to cycle through 6 weather & alert prompt ideas">
+                                🌤️ Alicante Weather &amp; Alerts <small class="tag-cycle-hint">↻</small>
+                            </span>
+                            <span class="quick-tag" onclick="cycleQuickPrompt('flood', this)" title="Click repeatedly to cycle through 6 flood & emergency hazard prompt ideas">
+                                🌊 Flood Hazards <small class="tag-cycle-hint">↻</small>
+                            </span>
+                            <span class="quick-tag" onclick="cycleQuickPrompt('csv', this)" title="Click repeatedly to cycle through 6 municipal CSV & cross-reference prompt ideas">
+                                📊 CSV Records <small class="tag-cycle-hint">↻</small>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -166,26 +168,96 @@
                         <div class="map-title-group">
                             <span class="map-icon">🗺️</span>
                             <div>
-                                <h3>Alicante Spatial Telemetry &amp; Cartography</h3>
-                                <span class="map-sub">OpenStreetMap Layer · PATRICOVA Flood Areas · SISCOVA Seismic Stations</span>
+                                <h3>GVA PATRICOVA Flood Hazard &amp; Multi-Risk Map</h3>
+                                <span class="map-sub">Official ICV GVA PATRICOVA flood layer overlaid on real streets + filterable hazard levels &amp; official GVA Visor</span>
                             </div>
                         </div>
                         <div class="map-header-badges">
-                            <span class="dash-panel-badge badge-active" id="map-badge">Live Map</span>
+                            <button class="map-ctrl-btn active" id="btn-mode-integrated" onclick="setMapViewerMode('integrated')" title="Our Street Map with Transparent Official GVA PATRICOVA Overlay & Filters">
+                                🌊 PATRICOVA + Street Map
+                            </button>
+                            <button class="map-ctrl-btn" id="btn-mode-gva-visor" onclick="setMapViewerMode('gva')" title="Embed Full Official GVA Visor Website (visor.gva.es)">
+                                🏛️ Official GVA Visor Website
+                            </button>
+                            <button class="map-ctrl-btn" onclick="resetAemetMapView()" title="Reset Map to Comunitat Valenciana">
+                                🎯 Reset
+                            </button>
                         </div>
                     </div>
+
+                    <!-- Search Bar + Official PATRICOVA Filter Bar -->
+                    <div class="map-search-bar-row" id="map-controls-bar">
+                        <div class="map-city-search-wrapper">
+                            <span class="search-icon">🔍</span>
+                            <input
+                                type="text"
+                                id="map-city-search-input"
+                                placeholder="Search any city or street (e.g., Valencia, Paiporta, Alzira, Alicante, Orihuela, Alcoy)..."
+                                autocomplete="off"
+                            >
+                            <button type="button" class="map-search-btn" onclick="searchMapCity()">Search</button>
+                            <div id="map-search-suggestions" class="map-search-suggestions hidden"></div>
+                        </div>
+
+                        <!-- Layer & PATRICOVA Level Filters -->
+                        <div class="patricova-filter-strip">
+                            <label class="patricova-filter-chip active" title="Peligrosidad 1, 2 & 3 (High & Very High Flood Hazard)">
+                                <input type="checkbox" checked onchange="updatePatricovaSubLayers()" id="chk-pat-high">
+                                <span class="legend-swatch" style="background:#7e22ce;"></span> Peligrosidad Alta (1-3)
+                            </label>
+                            <label class="patricova-filter-chip active" title="Peligrosidad 4, 5 & 6 (Moderate & Low Flood Hazard)">
+                                <input type="checkbox" checked onchange="updatePatricovaSubLayers()" id="chk-pat-mod">
+                                <span class="legend-swatch" style="background:#eab308;"></span> Media/Baja (4-6)
+                            </label>
+                            <label class="patricova-filter-chip active" title="Peligrosidad Geomorfológica (Ramblas, Barrancos & Alluvial Plains)">
+                                <input type="checkbox" checked onchange="updatePatricovaSubLayers()" id="chk-pat-geo">
+                                <span class="legend-swatch" style="background:#ec4899;"></span> Geomorfológica
+                            </label>
+                            <label class="patricova-filter-chip active" title="Red de Cauces (Official River & Ravine Network)">
+                                <input type="checkbox" checked onchange="updatePatricovaSubLayers()" id="chk-pat-cauces">
+                                <span class="legend-swatch" style="background:#0284c7;"></span> Cauces
+                            </label>
+                            <label class="patricova-filter-chip active" title="AEMET Weather Warnings & Forest Fire Zones">
+                                <input type="checkbox" checked onchange="toggleExtraHazards(this.checked)" id="chk-extra-hazards">
+                                🔥 Fire &amp; AEMET
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="map-viewer" id="map-display">
-                        <iframe 
-                            id="default-map-iframe"
-                            width="100%" 
-                            height="100%" 
-                            frameborder="0" 
-                            scrolling="no" 
-                            marginheight="0" 
-                            marginwidth="0" 
-                            src="https://www.openstreetmap.org/export/embed.html?bbox=-0.5283737182617189%2C38.31422731110741%2C-0.439110279083252%2C38.375620986705574&amp;layer=mapnik&amp;marker=38.3451700%2C-0.4814900" 
-                            style="border: none; position: absolute; inset: 0; border-radius: inherit;">
-                        </iframe>
+                        <!-- Mode 1: Our Leaflet Street Map with Transparent Live GVA PATRICOVA Tiles -->
+                        <div id="aemet-leaflet-map" style="width: 100%; height: 100%; position: absolute; inset: 0; z-index: 1;"></div>
+
+                        <!-- Mode 2: Full Official GVA Visor Cartogràfic Embed -->
+                        <div id="gva-visor-wrapper" style="display: none; width: 100%; height: 100%; position: absolute; inset: 0; z-index: 550; background: var(--bg-card-solid); flex-direction: column;">
+                            <div class="gva-visor-toolbar">
+                                <span>🏛️ <strong>Official Generalitat Valenciana Cartographic Visor</strong> — PATRICOVA Peligrosidad por Inundación</span>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <button type="button" class="map-ctrl-btn" onclick="reloadGvaVisorIframe()">🔄 Reload Visor</button>
+                                    <a href="https://visor.gva.es/visor/?capas=spa_icv_orde_patricova_peligrosidad_inun" target="_blank" rel="noopener noreferrer" class="map-ctrl-btn active" style="text-decoration:none;">↗ Open Full Screen in New Tab</a>
+                                </div>
+                            </div>
+                            <iframe
+                                id="gva-visor-iframe"
+                                src="about:blank"
+                                data-src="https://visor.gva.es/visor/?capas=spa_icv_orde_patricova_peligrosidad_inun"
+                                style="flex: 1; width: 100%; height: calc(100% - 42px); border: none; position: relative;"
+                                allow="geolocation; fullscreen"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                title="Visor Cartogràfic de la Generalitat Valenciana - PATRICOVA">
+                            </iframe>
+                        </div>
+
+                        <!-- Official PATRICOVA Legend matching visor.gva.es colors -->
+                        <div class="aemet-map-legend" id="aemet-map-legend">
+                            <div class="legend-title">PATRICOVA PELIGROSIDAD (ICV GVA)</div>
+                            <div class="legend-item"><span class="legend-swatch" style="background:#7e22ce;"></span> <strong>Nivel 1–2</strong> — Calado Alto (&gt;0.8m), T&lt;100a</div>
+                            <div class="legend-item"><span class="legend-swatch" style="background:#f97316;"></span> <strong>Nivel 3–4</strong> — Calado Bajo (&lt;0.8m), T&lt;100a</div>
+                            <div class="legend-item"><span class="legend-swatch" style="background:#fde047;"></span> <strong>Nivel 5–6</strong> — Baja Frecuencia (T 100–500a)</div>
+                            <div class="legend-item"><span class="legend-swatch" style="background:#f472b6;"></span> <strong>Geomorfológica</strong> — Llanura / Barranco</div>
+                            <div class="legend-item"><span class="legend-swatch" style="background:#0284c7;"></span> <strong>Red de Cauces</strong> · <span class="legend-swatch swatch-fire"></span> <strong>Incendios</strong></div>
+                            <div class="legend-hint" id="aemet-map-status-hint">Click any point on the map to query official GVA PATRICOVA risk</div>
+                        </div>
                     </div>
                 </div>
 
@@ -287,8 +359,9 @@
         </div>
     </div>
 
-    <!-- Include Markdown Parser -->
+    <!-- Include Markdown Parser & Leaflet -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script type="module" src="main.js?v=2.1"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script type="module" src="main.js?v=3.0"></script>
 </body>
 </html>

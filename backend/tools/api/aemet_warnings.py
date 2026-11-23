@@ -173,6 +173,7 @@ class AemetWarningsTool(BaseTool):
                 "expires": now_iso,
                 "affected_areas": ["Litoral norte de Alicante"],
                 "zona_meteo": "Litoral norte de Alicante",
+                "polygons": [[[38.88, -0.15], [38.90, 0.12], [38.73, 0.23], [38.53, -0.08], [38.50, -0.25], [38.72, -0.28]]],
                 "region": region
             },
             {
@@ -190,6 +191,7 @@ class AemetWarningsTool(BaseTool):
                 "expires": now_iso,
                 "affected_areas": ["Interior norte de Castellón"],
                 "zona_meteo": "Interior norte de Castellón",
+                "polygons": [[[40.78, -0.32], [40.75, 0.18], [40.35, 0.12], [40.28, -0.35], [40.55, -0.45]]],
                 "region": region
             },
             {
@@ -207,6 +209,7 @@ class AemetWarningsTool(BaseTool):
                 "expires": now_iso,
                 "affected_areas": ["Litoral de Valencia"],
                 "zona_meteo": "Litoral de Valencia",
+                "polygons": [[[39.75, -0.38], [39.75, -0.18], [39.25, -0.20], [39.25, -0.48]]],
                 "region": region
             },
             {
@@ -224,6 +227,7 @@ class AemetWarningsTool(BaseTool):
                 "expires": now_iso,
                 "affected_areas": ["Litoral sur de Valencia"],
                 "zona_meteo": "Litoral sur de Valencia",
+                "polygons": [[[39.25, -0.45], [39.25, -0.18], [38.88, -0.05], [38.88, -0.35]]],
                 "region": region
             },
             {
@@ -241,74 +245,7 @@ class AemetWarningsTool(BaseTool):
                 "expires": now_iso,
                 "affected_areas": ["Litoral norte de Castellón"],
                 "zona_meteo": "Litoral norte de Castellón",
-                "region": region
-            },
-            {
-                "identifier": "AEMET-CAP-CV-006",
-                "event": "Viento",
-                "severity": "Minor",
-                "urgency": "Expected",
-                "certainty": "Possible",
-                "level": "Verde",
-                "nivel": "Verde",
-                "headline": "Sin avisos significativos en el litoral sur de Alicante",
-                "description": "Condiciones meteorológicas normales sin umbral de riesgo de protección civil superado en la bahía de Alicante.",
-                "instruccion": "Situación de normalidad operativa.",
-                "onset": now_iso,
-                "expires": now_iso,
-                "affected_areas": ["Litoral sur de Alicante / Alicante Ciudad"],
-                "zona_meteo": "Litoral sur de Alicante",
-                "region": region
-            },
-            {
-                "identifier": "AEMET-CAP-CV-007",
-                "event": "Sin riesgo",
-                "severity": "Minor",
-                "urgency": "Past",
-                "certainty": "Observed",
-                "level": "Verde",
-                "nivel": "Verde",
-                "headline": "Sin avisos significativos en el interior sur de Alicante",
-                "description": "Estabilidad meteorológica en comarcas del Vinalopó y Vega Baja.",
-                "instruccion": "Situación de normalidad.",
-                "onset": now_iso,
-                "expires": now_iso,
-                "affected_areas": ["Interior de Alicante"],
-                "zona_meteo": "Interior de Alicante",
-                "region": region
-            },
-            {
-                "identifier": "AEMET-CAP-CV-008",
-                "event": "Sin riesgo",
-                "severity": "Minor",
-                "urgency": "Past",
-                "certainty": "Observed",
-                "level": "Verde",
-                "nivel": "Verde",
-                "headline": "Sin avisos significativos en el interior de Valencia",
-                "description": "Estabilidad atmosférica sin alertas en Requena-Utiel ni Hoya de Buñol.",
-                "instruccion": "Situación de normalidad.",
-                "onset": now_iso,
-                "expires": now_iso,
-                "affected_areas": ["Interior de Valencia"],
-                "zona_meteo": "Interior de Valencia",
-                "region": region
-            },
-            {
-                "identifier": "AEMET-CAP-CV-009",
-                "event": "Sin riesgo",
-                "severity": "Minor",
-                "urgency": "Past",
-                "certainty": "Observed",
-                "level": "Verde",
-                "nivel": "Verde",
-                "headline": "Sin avisos significativos en el litoral sur de Castellón",
-                "description": "Parámetros meteorológicos dentro de los rangos de seguridad habituales.",
-                "instruccion": "Situación de normalidad.",
-                "onset": now_iso,
-                "expires": now_iso,
-                "affected_areas": ["Litoral sur de Castellón"],
-                "zona_meteo": "Litoral sur de Castellón",
+                "polygons": [[[40.55, 0.15], [40.52, 0.52], [40.08, 0.25], [40.12, -0.02]]],
                 "region": region
             }
         ]
@@ -343,12 +280,38 @@ class AemetWarningsTool(BaseTool):
                     if "nivel" in vn.lower() or "color" in vn.lower():
                         level = ec.findtext(f"{CAP_NS}value", "")
 
-                # Extract affected area names
+                # Exclude "nivel verde" / Minor (no danger) status entries — only return actual hazard alerts (Amarillo, Naranja, Rojo)
+                if (
+                    level.strip().lower() in ("verde", "green", "none")
+                    or severity.strip().lower() in ("minor", "none")
+                    or "nivel verde" in headline.lower()
+                    or "sin riesgo" in event.lower()
+                    or "sin avisos" in headline.lower()
+                ):
+                    continue
+
+                # Extract affected area names and official CAP polygon coordinates
                 areas = []
+                polygons = []
                 for area_el in info.findall(f"{CAP_NS}area"):
                     aname = area_el.findtext(f"{CAP_NS}areaDesc", "")
                     if aname:
                         areas.append(aname)
+                    for poly_el in area_el.findall(f"{CAP_NS}polygon"):
+                        poly_text = (poly_el.text or "").strip()
+                        if poly_text:
+                            coords = []
+                            for pair in poly_text.split():
+                                parts = pair.split(",")
+                                if len(parts) == 2:
+                                    try:
+                                        coords.append([float(parts[0]), float(parts[1])])
+                                    except ValueError:
+                                        pass
+                            if len(coords) >= 3:
+                                polygons.append(coords)
+
+                instruction = info.findtext(f"{CAP_NS}instruction", "")
 
                 warnings.append({
                     "identifier": identifier,
@@ -356,12 +319,16 @@ class AemetWarningsTool(BaseTool):
                     "severity": severity,
                     "urgency": urgency,
                     "certainty": certainty,
-                    "level": level,
+                    "level": level or severity,
+                    "nivel": level or severity,
                     "headline": headline,
                     "description": description[:300] if description else "",
+                    "instruccion": instruction or (description[:300] if description else headline),
                     "onset": onset,
                     "expires": expires,
                     "affected_areas": areas,
+                    "zona_meteo": ", ".join(areas) if areas else area_name,
+                    "polygons": polygons,
                     "region": area_name,
                 })
         except ET.ParseError:

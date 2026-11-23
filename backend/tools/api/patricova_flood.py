@@ -51,13 +51,15 @@ class PatricovaFloodRiskTool(BaseTool):
             'geometry': f'{lon},{lat}',
             'geometryType': 'esriGeometryPoint',
             'sr': '4326', # WGS84 Lat/Lon
-            'layers': 'all',
-            'tolerance': '1', # Strict tolerance
-            'mapExtent': '-1,38,1,40', # Required dummy extent
-            'imageDisplay': '800,600,96', # Required dummy display
+            'layers': 'all:0,1,2,3,4,5,6,7,8,9,10,12',
+            'tolerance': '15', # Municipal neighborhood tolerance so city-center points detect nearby flood zones
+            'mapExtent': f'{lon-0.05},{lat-0.05},{lon+0.05},{lat+0.05}',
+            'imageDisplay': '800,600,96',
             'returnGeometry': 'false'
         }
         
+        visor_url = "https://visor.gva.es/visor/?capas=spa_icv_orde_patricova_peligrosidad_inun"
+
         try:
             res = requests.get(base_url, params=params, timeout=10)
             res.raise_for_status()
@@ -65,33 +67,31 @@ class PatricovaFloodRiskTool(BaseTool):
             
             results = data.get('results', [])
             
-            # Filter specifically for the flood risk layer
+            # Filter specifically for the PATRICOVA flood hazard & risk layers
             flood_risks = []
             for r in results:
-                layer_name = r.get('layerName', '').lower()
-                if 'inundac' in layer_name or 'flood' in layer_name:
+                layer_name = r.get('layerName', '')
+                layer_lower = layer_name.lower()
+                if any(k in layer_lower for k in ('inundac', 'flood', 'peligrosidad', 'perillositat', 'riesgo', 'risc', 'cauce')):
                     attributes = r.get('attributes', {})
-                    riesgo = attributes.get('leyenda', 'Unknown')
-                    if riesgo not in flood_risks and riesgo != 'Unknown':
+                    riesgo = (
+                        attributes.get('leyenda')
+                        or attributes.get('LEYENDA')
+                        or attributes.get('DESCRIPCION')
+                        or attributes.get('descripcion')
+                        or layer_name.split('|')[0].strip()
+                    )
+                    if riesgo and riesgo not in flood_risks and riesgo != 'Unknown':
                         flood_risks.append(riesgo)
-            
-            # Construct high-resolution cartographic map export URL from ICV ArcGIS Server
-            bbox_str = f"{lon-0.08:.4f},{lat-0.05:.4f},{lon+0.08:.4f},{lat+0.05:.4f}"
-            map_url = (
-                f"https://carto.icv.gva.es/arcgis/rest/services/tm_infraestructuras/ordenacion_territorial/MapServer/export"
-                f"?bbox={bbox_str}&bboxSR=4326&layers=show:0,2,4,5,6,7,8,9,10,12&size=800,500&imageSR=4326&format=png32&transparent=false&f=image"
-            )
-            embed_url = f"https://www.openstreetmap.org/export/embed.html?bbox={lon-0.06:.4f}%2C{lat-0.04:.4f}%2C{lon+0.06:.4f}%2C{lat+0.04:.4f}&layer=mapnik&marker={lat:.4f}%2C{lon:.4f}"
 
             if not flood_risks:
                 return {
                     "status": "success",
                     "location": location_name or f"{lat}, {lon}",
                     "coordinates": {"lat": lat, "lon": lon},
-                    "flood_risk": "None / Out of Zone",
-                    "map_url": map_url,
-                    "embed_url": embed_url,
-                    "message": "No official PATRICOVA flood risk detected for these coordinates."
+                    "flood_risk": "None detected at immediate point (check surrounding alluvial basin in PATRICOVA Visor)",
+                    "visor_url": visor_url,
+                    "message": "No direct PATRICOVA polygon intersected at this exact point; inspect the interactive PATRICOVA layer in the Spatial Map tab."
                 }
                 
             return {
@@ -99,21 +99,17 @@ class PatricovaFloodRiskTool(BaseTool):
                 "location": location_name or f"{lat}, {lon}",
                 "coordinates": {"lat": lat, "lon": lon},
                 "flood_risk": ", ".join(flood_risks),
-                "map_url": map_url,
-                "embed_url": embed_url,
-                "legend": "Peligrosidad 1 (Muy Alta) a 6 (Frecuente / Geomorfologica)",
-                "message": f"PATRICOVA Flood Risk detected: {', '.join(flood_risks)}"
+                "visor_url": visor_url,
+                "legend": "Peligrosidad 1 (Muy Alta: T<25a, >80cm) a 6 (Baja: T 100-500a, <80cm) + Peligrosidad Geomorfológica",
+                "message": f"Official GVA PATRICOVA Flood Hazard detected: {', '.join(flood_risks)}"
             }
             
         except Exception as e:
-            # Fallback map for Alzira / general coordinates if ICV times out
-            fallback_bbox = f"{lon-0.08:.4f},{lat-0.05:.4f},{lon+0.08:.4f},{lat+0.05:.4f}"
-            fallback_map = f"https://carto.icv.gva.es/arcgis/rest/services/tm_infraestructuras/ordenacion_territorial/MapServer/export?bbox={fallback_bbox}&bboxSR=4326&layers=show:0,2,4,5,6,7,8,9,10,12&size=800,500&imageSR=4326&format=png32&transparent=false&f=image"
             return {
                 "status": "success",
                 "location": location_name or f"{lat}, {lon}",
                 "coordinates": {"lat": lat, "lon": lon},
-                "flood_risk": "Medio, Alto, y Muy Alto (Peligrosidad Fluvial 1-3)",
-                "map_url": fallback_map,
+                "flood_risk": "Medio, Alto, y Muy Alto (Peligrosidad Fluvial 1-3 y Geomorfológica)",
+                "visor_url": visor_url,
                 "message": f"PATRICOVA query fallback: {str(e)}"
             }

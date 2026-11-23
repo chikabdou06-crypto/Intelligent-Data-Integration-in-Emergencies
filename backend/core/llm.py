@@ -44,6 +44,7 @@ from backend.core.providers import GeminiProvider, HFProvider, OllamaProvider
 
 # Global active provider mode: "auto" (default), "gemini", "ollama"
 ACTIVE_MODE = "auto"
+ACTIVE_MODEL_NAME = "Gemini 3.5 Flash"
 SESSION_TOKENS_USED = 0
 
 
@@ -81,6 +82,7 @@ def get_providers_status() -> dict:
         
     return {
         "mode": ACTIVE_MODE,
+        "active_model": ACTIVE_MODEL_NAME,
         "gemini": {
             "available": gemini_ready,
             "name": "Google Gemini (Cloud)"
@@ -96,17 +98,17 @@ def get_providers_status() -> dict:
 # Role-based model configurations
 ROLE_MODELS = {
     "planner": {
-        "gemini": ["gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-flash", "gemini-2.0-flash"],
+        "gemini": ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-2.5-flash"],
         "hf": ["Qwen/Qwen2.5-72B-Instruct", "meta-llama/Meta-Llama-3-8B-Instruct"],
         "ollama": ["qwen2.5:7b", "llama3"]
     },
     "synthesizer": {
-        "gemini": ["gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-flash", "gemini-2.0-flash"],
+        "gemini": ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-2.5-flash"],
         "hf": ["Qwen/Qwen2.5-7B-Instruct", "meta-llama/Meta-Llama-3-8B-Instruct"],
         "ollama": ["qwen2.5:7b", "llama3"]
     },
     "general": {
-        "gemini": ["gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-flash", "gemini-2.0-flash"],
+        "gemini": ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-2.5-flash"],
         "hf": ["Qwen/Qwen2.5-7B-Instruct", "meta-llama/Meta-Llama-3-8B-Instruct"],
         "ollama": ["qwen2.5:7b", "llama3"]
     }

@@ -113,6 +113,15 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def disable_static_cache(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path == "/" or request.url.path.endswith((".js", ".css", ".html")):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+    return response
+
+
 # ==============================================================================
 # 1. MCP TOOL REGISTRY & OBSERVABILITY ENDPOINTS
 # ==============================================================================
@@ -247,11 +256,17 @@ def api_get_telemetry(location: str = "alicante"):
         elif isinstance(warnings_raw, list):
             warnings_list = warnings_raw
 
+        warnings_list = [
+            w for w in warnings_list
+            if str(w.get("level", "")).strip().lower() not in ("verde", "green", "minor", "none")
+            and str(w.get("severity", "")).strip().lower() not in ("minor", "none")
+            and "nivel verde" not in str(w.get("headline", "")).lower()
+        ]
+
         regional_count = len(warnings_list)
         local_count = sum(
             1 for w in warnings_list
             if ("alicante" in str(w.get("zona_meteo", "")).lower() or "alicante" in str(w.get("affected_areas", "")).lower())
-            and str(w.get("level", "")).lower() not in ("verde", "minor", "none")
         )
 
         temp_val = 22.4

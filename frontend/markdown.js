@@ -25,12 +25,18 @@ export function renderMarkdown(text) {
     html = html.replace(/^## (.+)$/gm, '<h3 style="margin:12px 0 8px; font-size:15px;">$1</h3>');
     html = html.replace(/^# (.+)$/gm, '<h2 style="margin:14px 0 8px; font-size:16px;">$1</h2>');
 
-    // Images: ![alt](url) — render inline images for maps/charts
+    // Images: ![alt](url) — skip blank-white ArcGIS export images and show an interactive map action card instead
     html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, url) => {
+        if (url.includes("carto.icv.gva.es") && url.includes("MapServer/export")) {
+            return `<div class="inline-image-container" style="padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                <span>🌊 <strong>Official GVA PATRICOVA Flood Layer Ready</strong> (overlaid on live street map)</span>
+                <a href="javascript:void(0)" onclick="if(window.switchMainView) window.switchMainView('map');" style="background:var(--accent); color:#fff; padding:6px 12px; border-radius:8px; font-size:12px; text-decoration:none; font-weight:600; white-space:nowrap;">Open in Spatial Map 🗺️</a>
+            </div>`;
+        }
         return `<div class="inline-image-container">
             <img src="${url}" alt="${alt}" class="inline-image" loading="lazy" style="cursor: pointer;" onclick="window.open('${url}', '_blank')" onerror="this.outerHTML='<span class=\'image-error\'>[No se pudo cargar la cartografía en vivo]</span>'">
             <div class="image-caption">
-                <span>🗺️ ${alt || 'Cartografía Oficial PATRICOVA'}</span>
+                <span>🗺️ ${alt || 'Cartografía Oficial'}</span>
                 <a href="javascript:void(0)" onclick="if(window.switchMainView) window.switchMainView('map');" style="margin-left:auto; color:var(--primary); font-size:11px; text-decoration:none; font-weight:600;">Ver en Visor Espacial ↗</a>
             </div>
         </div>`;

@@ -5,6 +5,7 @@ __pycache__/
 .venv/
 lookhere/
 .vscode/
+*.egg-info/
 
 # Vault Data (Strictly ignored)
 backend/vault/
